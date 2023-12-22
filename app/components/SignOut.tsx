@@ -19,7 +19,7 @@ const SignOut = () => {
       await deleteDoc((doc(db, "users", user.uid)));
       await signOut(auth)
       .then(() => {
-        console.log("success!logout!")
+        console.log("logout success!")
       })
       .catch((error) => {
         alert('サインアウトが正常にできませんでした（' + error.message + '）')

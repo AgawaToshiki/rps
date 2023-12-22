@@ -1,54 +1,43 @@
 'use client'
 import Image from 'next/image';
-import { db } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
-import React, { useState } from 'react';
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-import { app } from "../firebase";
+import React, { useEffect, useState } from 'react';
+import Login from './components/Login';
+import DashBoard from './components/DashBoard';
+import SignOut from './components/SignOut';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 
 
 export default function Home() {
-  const [isName, setName] = useState<string>("")
+  const [isSignedIn, setSignedIn] = useState<boolean>(false)
   const [isUser, setUser] = useState<string>("")
-  
-  const signIn = () => {
-    const auth = getAuth(app);
-    signInAnonymously(auth)
-      .then(() => {
-        console.log("login success")
-        // Signed in..
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode)
-        console.log(errorMessage)
-        // ...
-      });
-  }
 
-const auth = getAuth();
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/auth.user
-    const uid = user.uid;
-    console.log(uid)
-    setUser(uid)
-    // ...
-  } else {
-    // User is signed out
-    // ...
-  }
-});
+    onAuthStateChanged(auth, (user) => {
+      setSignedIn(!!user)
+      if(user){
+        const getUser = query(collection(db, "users"), where("userId", "==", user.uid))
+        onSnapshot(getUser, (querySnapshot)=> {
+          querySnapshot.docs.forEach((doc) => {
+            const data = doc.data().displayName
+            setUser(data)
+          })
+        })
+      }
+    })
 
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-        <input type="text" value={ isName } onChange={(e)=> setName(e.target.value)} placeholder="user名" className="border-2 border-black p-2"/>
-        <button type="submit" onClick={signIn} className="border-2 border-black p-2">登録</button>
-            {isUser}
-    </div>
+    <>
+    { isSignedIn ? (
+      <>
+        <DashBoard data={ isUser }/>
+        <SignOut />
+      </>
+    ) : (
+      <Login />
+    )}
+    </>
   )
 }

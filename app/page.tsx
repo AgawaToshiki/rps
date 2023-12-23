@@ -12,7 +12,7 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 export default function Home() {
   const [isSignedIn, setSignedIn] = useState<boolean>(false)
   const [isUser, setUser] = useState<{ displayName: string, id: string }>({ displayName: "", id: "" })
-  const [isGroup, setGroup] = useState<{ groupId: string; groupName: string; }[]>([]);
+  const [isGroup, setGroup] = useState<{ groupId: string, groupName: string, member: string[] }[]>([]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -34,7 +34,11 @@ export default function Home() {
     onSnapshot(getGroup, (querySnapshot) => {
       const group = querySnapshot.docs.map((doc) => {
         const groupData = doc.data()
-        return { groupId: groupData.groupId, groupName: groupData.groupName }
+        return { 
+          groupId: groupData.groupId, 
+          groupName: groupData.groupName, 
+          member: groupData.member 
+        }
       })
       setGroup(group)
     })

@@ -3,7 +3,9 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div>a</div>
+    <div>
+      <button>退室</button>
+    </div>
   )
 }
 

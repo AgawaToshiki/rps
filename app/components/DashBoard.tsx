@@ -14,7 +14,10 @@ type Props = {
   groupData: {
     groupName: string;
     groupId: string;
-    member: string[];
+    member: {
+      userId: string,
+      displayName: string
+    }[]
   }[]
 }
 
@@ -44,8 +47,8 @@ const DashBoard = ({ data, groupData }: Props) => {
     if (targetGroup) {
       //既に同じユーザーが存在しているときは新しく追加しない
       //退室時に削除するので同じユーザーは存在しないようにする
-      if (!targetGroup.member.includes(data.id)) {
-        const newMembers = [...targetGroup.member, data.id];
+      if (!targetGroup.member.some((member) => member.userId === data.id)) {
+        const newMembers = [...targetGroup.member, { userId: data.id, displayName: data.displayName}];
         console.log(newMembers)
         const groupDocRef = doc(db, "groups", id);
         await updateDoc(groupDocRef, { member: newMembers });

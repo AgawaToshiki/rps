@@ -10,7 +10,14 @@ const page = () => {
   const params = { 
       id: nextQuery.get('id'), 
   }
-  const [isGroup, setGroup] = useState<{ groupId: string, groupName: string, member: string[] }[]>([]);
+  const [isGroup, setGroup] = useState<{ 
+    groupId: string, 
+    groupName: string, 
+    member: {
+      userId: string, 
+      displayName: string 
+    }[] 
+  }[]>([]);
 
   //グループメンバー取得
   useEffect(() => {
@@ -45,7 +52,7 @@ const page = () => {
         { isGroup.map((group) => (
           <div key={ group.groupId } className="flex flex-col border border-black">
             {group.member.map((member,index) => (
-              <div key={ index } className="bg-pink-200 border border-black">{ member }</div>
+              <div key={ index } className="bg-pink-200 border border-black">{ member.displayName }</div>
             ))}
           </div>
         ))}

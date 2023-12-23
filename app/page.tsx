@@ -12,7 +12,15 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 export default function Home() {
   const [isSignedIn, setSignedIn] = useState<boolean>(false)
   const [isUser, setUser] = useState<{ displayName: string, id: string }>({ displayName: "", id: "" })
-  const [isGroup, setGroup] = useState<{ groupId: string, groupName: string, member: string[] }[]>([]);
+  const [isGroup, setGroup] = useState<{ 
+    groupId: string, 
+    groupName: string, 
+    member: 
+    { 
+      userId: string, 
+      displayName: string 
+    }[]
+  }[]>([]);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

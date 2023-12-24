@@ -11,10 +11,11 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 export default function Home() {
   const [isSignedIn, setSignedIn] = useState<boolean>(false)
-  const [isUser, setUser] = useState<{ displayName: string, id: string }>({ displayName: "", id: "" })
-  const [isGroup, setGroup] = useState<{ 
+  const [user, setUser] = useState<{ displayName: string, id: string }>({ displayName: "", id: "" })
+  const [group, setGroup] = useState<{ 
     groupId: string, 
-    groupName: string, 
+    groupName: string,
+    status: string
   }[]>([]);
 
   useEffect(() => {
@@ -39,7 +40,8 @@ export default function Home() {
         const groupData = doc.data()
         return { 
           groupId: groupData.groupId, 
-          groupName: groupData.groupName, 
+          groupName: groupData.groupName,
+          status: groupData.status
         }
       })
       setGroup(group)
@@ -51,7 +53,7 @@ export default function Home() {
     <>
     { isSignedIn ? (
       <>
-        <DashBoard data={ isUser } groupData={ isGroup } />
+        <DashBoard data={ user } groupData={ group } />
         <SignOut />
       </>
     ) : (

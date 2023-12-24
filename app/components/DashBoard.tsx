@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import GroupList from './GroupList'
 import Group from './Group'
 import Link from 'next/link'
@@ -14,7 +14,8 @@ type Props = {
   groupData: {
     groupName: string;
     groupId: string;
-  }[]
+    status: string;
+  }[],
 }
 
 const DashBoard = ({ data, groupData }: Props) => {
@@ -28,6 +29,7 @@ const DashBoard = ({ data, groupData }: Props) => {
       await setDoc(doc(db, "groups", groupId), {
         groupId: groupId,
         groupName: ref.current.value,
+        status: "waiting"
       })
       ref.current.value = "";
     }
@@ -35,10 +37,10 @@ const DashBoard = ({ data, groupData }: Props) => {
 
   const handleJoinGroup = async(id: string) => {
     const memberCollectionRef = collection(db, "groups", id, "members");
-    const querySnapshot = await getDocs(
+    const groupQuerySnapshot = await getDocs(
       query(memberCollectionRef, where("userId", "==", data.id))
     );
-    if(querySnapshot.size === 0) {
+    if(groupQuerySnapshot.size === 0) {
       await addDoc(memberCollectionRef, {
         userId: data.id,
         displayName: data.displayName,

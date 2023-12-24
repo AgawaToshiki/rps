@@ -20,10 +20,13 @@ const page = () => {
   const [isGameStart, setGameStart] = useState<string>("waiting");
   const [isAllReady, setAllReady] = useState<boolean>(false);
   const [selectedHand, setSelectedHand] = useState<string>("");
+  const [groupName, setGroupName] = useState<string>("");
+  const [selectedAllHand, setSelectedAllHand] = useState<[]>([])
 
-  //グループメンバー取得
   useEffect(() => {
+
       if(params.id){
+          //グループメンバー取得
         const memberDocRef = query(collection(db, "groups", params.id, "members"))
         onSnapshot(memberDocRef, (querySnapshot) => {
           const membersArray: { userId: string, displayName: string, choice: string }[] = [];
@@ -33,16 +36,17 @@ const page = () => {
               displayName: doc.data().displayName,
               choice: doc.data().choice,
             })
-            console.log(doc.data())
           })
           setMember(membersArray)
         })
+        //グループ名とゲームの状態を取得
         const groupCollectionDocRef = collection(db, "groups")
         const statusDocRef = query(groupCollectionDocRef, where("groupId", "==", params.id))
         onSnapshot(statusDocRef, (querySnapshot) => {
           querySnapshot.docs.forEach((doc) => {
             const gameStatus: string = doc.data().status
-            console.log(doc.data().status)
+            const groupName: string = doc.data().groupName
+            setGroupName(groupName)
             setGameStart(gameStatus)
           })
         })
@@ -50,6 +54,7 @@ const page = () => {
   }, [])
 
   useEffect(() => {
+    //Ready状態か監視
     const isReady = getMember.every((member) => member.choice !== "");
     if(isReady) {
       setAllReady(true);
@@ -58,11 +63,18 @@ const page = () => {
     }
   }, [getMember])
 
+  useEffect(() => {
+    //手のリセットはゲームが終わったタイミング
+    if(isGameStart === "waiting")
+      setSelectedHand("")
+  }, [isGameStart])
+
   const handleLeaveGroup = () => {
 
   }
 
   const handleChooseHand = async(choice: string) => {
+    //手の選択をリアルタイムでfirestoreに反映
     if(params.id && auth.currentUser){
       const memberQuery = query(collection(db, "groups", params.id, "members"), where("userId", "==", auth.currentUser.uid))
       const memberQuerySnapshot = await getDocs(memberQuery);
@@ -78,30 +90,41 @@ const page = () => {
   }
 
   const handleGameStart = async() => {
+    //ゲームをスタート・全員の手を取得
     if(params.id){
       const statusDoc = doc(db, "groups", params.id)
       await updateDoc(statusDoc, {
         status: "playing"
       })
+      const memberQuery = query(collection(db, "groups", params.id, "members"));
+      onSnapshot(memberQuery, (querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+          setSelectedAllHand(doc.data().choice);
+        })
+      })
+      console.log(selectedAllHand)
       setGameStart("playing")
     }
   }
 
   const handleGameRestart = async() => {
+    //ゲームをリセット・全員の手を空に
     if(params.id && auth.currentUser){
       const statusDoc = doc(db, "groups", params.id)
       await updateDoc(statusDoc, {
         status: "waiting"
       })
-      const memberQuery = query(collection(db, "groups", params.id, "members"), where("userId", "==", auth.currentUser.uid))
+      const memberQuery = query(collection(db, "groups", params.id, "members"))
       const memberQuerySnapshot = await getDocs(memberQuery);
       if(memberQuerySnapshot.size > 0) {
-        const memberDoc = memberQuerySnapshot.docs[0];
-        const memberDocRef = doc(db, "groups", params.id, "members", memberDoc.id);
-        await updateDoc(memberDocRef, 
-          { choice : "" }
-        );
-        setSelectedHand("")
+        memberQuerySnapshot.forEach(async(memberDoc) => {
+          if(params.id){
+            const memberDocRef = doc(db, "groups", params.id, "members", memberDoc.id);
+            await updateDoc(memberDocRef, 
+              { choice : "" }
+            );
+          }
+        })
       }
       setGameStart("waiting")
     }
@@ -109,6 +132,7 @@ const page = () => {
 
   return (
     <div className="min-h-screen">
+      <p className="flex justify-center w-full my-10">グループ名:{ groupName }</p>
       <div className="p-10 mb-20">
         <div className="flex w-full">
           <p className="flex w-[50%]">参加者</p>

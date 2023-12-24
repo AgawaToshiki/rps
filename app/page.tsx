@@ -52,10 +52,9 @@ export default function Home() {
   return (
     <>
     { isSignedIn ? (
-      <>
+      <div className="relative max-w-[1920px] w-full min-h-screen">
         <DashBoard data={ user } groupData={ group } />
-        <SignOut />
-      </>
+      </div>
     ) : (
       <Login />
     )}

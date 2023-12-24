@@ -43,30 +43,35 @@ const Login = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <input 
-        type="text" 
-        value={ isName } 
-        onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setName(e.target.value)} 
-        placeholder="ニックネーム" 
-        className="border-2 border-black p-2"
-      />
-      <input 
-        type="text" 
-        value={ isEmail } 
-        onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setEmail(e.target.value)} 
-        placeholder="Email" 
-        className="border-2 border-black p-2"
-      />
-      <input 
-        type="text" 
-        value={ isPassword } 
-        onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setPassword(e.target.value)} 
-        placeholder="パスワード" 
-        className="border-2 border-black p-2"
-      />
-      <button type="submit" onClick={ signUp } className="border-2 border-black p-2">登録</button>
-      <button type="submit" onClick={ signIn } className="border-2 border-black p-2">ログイン</button>
+    <div className="flex justify-center items-center max-w-[1920px] min-h-screen">
+      <div className="">
+        <h1 className="flex justify-center my-10">うぇぶじゃんけん</h1>
+        <input 
+            type="text" 
+            value={ isName } 
+            onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setName(e.target.value)} 
+            placeholder="ニックネーム" 
+            className="flex justify-center max-w-[1920px] mx-auto mb-10 border-2 border-font-color p-2"
+          />
+        <div className="flex justify-center gap-[1px]">
+          <input 
+            type="text" 
+            value={ isEmail } 
+            onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setEmail(e.target.value)} 
+            placeholder="Email" 
+            className="border-2 border-font-color p-2"
+          />
+          <input 
+            type="text" 
+            value={ isPassword } 
+            onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setPassword(e.target.value)} 
+            placeholder="パスワード" 
+            className="border-2 border-font-color p-2"
+          />
+          <button type="submit" onClick={ signIn } className="border-2 border-font-color p-2">ログイン</button>
+          <button type="submit" onClick={ signUp } className="border-2 border-font-color p-2">登録</button>
+        </div>
+      </div>
     </div>
   )
 }

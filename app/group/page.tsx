@@ -148,9 +148,9 @@ const page = () => {
 
   return (
     <div className="min-h-screen">
-      <p className="flex justify-center w-full my-10">グループ名:{ groupName }</p>
+      <p className="flex justify-center w-full py-10 text-lg">グループ名:{ groupName }</p>
       <div className="p-10 mb-20">
-        <div className="flex w-full">
+        <div className="flex max-w-[1920px] w-full">
           <p className="flex w-[50%]">参加者</p>
           <p className="flex w-[50%]">じゃんけん</p>
         </div>
@@ -194,7 +194,7 @@ const page = () => {
         <button 
           onClick={() => handleChooseHand('rock')} 
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'rock' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-black rounded-full disabled:bg-gray-200`}>
+          className={`${selectedHand === 'rock' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200`}>
           <Image 
             src="/images/rock.png"
             alt=""
@@ -207,7 +207,7 @@ const page = () => {
         <button 
           onClick={() => handleChooseHand('scissors')}
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'scissors' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-black rounded-full disabled:bg-gray-200`}>
+          className={`${selectedHand === 'scissors' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200`}>
           <Image 
             src="/images/scissors.png"
             alt=""
@@ -220,7 +220,7 @@ const page = () => {
         <button 
           onClick={() => handleChooseHand('paper')}
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'paper' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-black rounded-full disabled:bg-gray-200`}>
+          className={`${selectedHand === 'paper' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200`}>
           <Image 
             src="/images/paper.png"
             alt=""
@@ -237,7 +237,7 @@ const page = () => {
           (
             <button
               onClick={ handleGameRestart }  
-              className="flex justify-center items-center w-[200px] h-[200px] border border-black rounded-full disabled:bg-gray-200">
+              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200">
                 もう1回じゃんけんする
             </button>
             )
@@ -246,14 +246,16 @@ const page = () => {
             <button 
               onClick={ handleGameStart } 
               disabled={ !isAllReady } 
-              className="flex justify-center items-center w-[200px] h-[200px] border border-black rounded-full disabled:bg-gray-200">
+              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200">
                 Start
             </button>
           )
         }
       </div>
-      <Link href="/" onClick={() => { handleLeaveGroup() }}>退室</Link>
-      <Link href="/" onClick={ () => { handleDeleteGroup() }}>グループ削除</Link>
+      <div className="flex justify-start gap-[1px] max-w-[1920px] w-[50%] p-10 absolute bottom-0">
+        <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2">退室</Link>
+        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2">グループ削除</Link>
+      </div>
     </div>
   )
 }

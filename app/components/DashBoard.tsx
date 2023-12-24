@@ -41,7 +41,8 @@ const DashBoard = ({ data, groupData }: Props) => {
       query(memberCollectionRef, where("userId", "==", data.id))
     );
     if(groupQuerySnapshot.size === 0) {
-      await addDoc(memberCollectionRef, {
+      const memberDocRef = doc(memberCollectionRef, data.id)
+      await setDoc(memberDocRef, {
         userId: data.id,
         displayName: data.displayName,
         choice: ""

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 
 const page = () => {
@@ -21,10 +21,9 @@ const page = () => {
   const [isAllReady, setAllReady] = useState<boolean>(false);
   const [selectedHand, setSelectedHand] = useState<string>("");
   const [groupName, setGroupName] = useState<string>("");
-  const [selectedAllHand, setSelectedAllHand] = useState<[]>([])
+  // const [selectedAllHand, setSelectedAllHand] = useState<[]>([])
 
   useEffect(() => {
-
       if(params.id){
           //グループメンバー取得
         const memberDocRef = query(collection(db, "groups", params.id, "members"))
@@ -69,10 +68,6 @@ const page = () => {
       setSelectedHand("")
   }, [isGameStart])
 
-  const handleLeaveGroup = () => {
-
-  }
-
   const handleChooseHand = async(choice: string) => {
     //手の選択をリアルタイムでfirestoreに反映
     if(params.id && auth.currentUser){
@@ -96,13 +91,13 @@ const page = () => {
       await updateDoc(statusDoc, {
         status: "playing"
       })
-      const memberQuery = query(collection(db, "groups", params.id, "members"));
-      onSnapshot(memberQuery, (querySnapshot) => {
-        querySnapshot.docs.forEach((doc) => {
-          setSelectedAllHand(doc.data().choice);
-        })
-      })
-      console.log(selectedAllHand)
+      // const memberQuery = query(collection(db, "groups", params.id, "members"));
+      // onSnapshot(memberQuery, (querySnapshot) => {
+      //   querySnapshot.docs.forEach((doc) => {
+      //     setSelectedAllHand(doc.data().choice);
+      //   })
+      // })
+      // console.log(selectedAllHand)
       setGameStart("playing")
     }
   }
@@ -128,6 +123,21 @@ const page = () => {
       }
       setGameStart("waiting")
     }
+  }
+
+  const handleLeaveGroup = async() => {
+    if(params.id && auth.currentUser){
+      const docRef = doc(db, "groups", params.id, "members", auth.currentUser.uid);
+      const docSnapshot = await getDoc(docRef);
+      if (docSnapshot.exists()) {
+        await deleteDoc(docRef);
+      }
+    }
+    console.log("削除しました。")
+  }
+
+  const handleDeleteGroup = () => {
+
   }
 
   return (
@@ -236,7 +246,8 @@ const page = () => {
           )
         }
       </div>
-      <Link href="/" onClick={() => { handleLeaveGroup }}>退出</Link>
+      <Link href="/" onClick={() => { handleLeaveGroup() }}>退室</Link>
+      <Link href="/" onClick={ () => { handleDeleteGroup() }}>グループ削除</Link>
     </div>
   )
 }

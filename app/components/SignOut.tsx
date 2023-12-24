@@ -9,7 +9,6 @@ const SignOut = () => {
   const signOutUser = async() => {
     const user = auth.currentUser
     if(user){
-      console.log(user.uid)
       const userQuery = query(collection(db, "users"), where("userId", "==", user.uid));
       const querySnapshot = await getDocs(userQuery);
       if (!querySnapshot.empty) {

@@ -3,7 +3,7 @@ import GroupList from './GroupList'
 import Group from './Group'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { db } from "../../firebase";
 
 type Props = {
@@ -14,20 +14,12 @@ type Props = {
   groupData: {
     groupName: string;
     groupId: string;
-    member: {
-      userId: string,
-      displayName: string
-    }[]
   }[]
 }
 
 const DashBoard = ({ data, groupData }: Props) => {
   const [newGroup, setNewGroup] = useState<{ id: string, name: string }[]>([])
   const ref = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    console.log(newGroup)
-  }, [newGroup])
   
   const handleNewGroup = async() => {
     if(ref.current){
@@ -36,28 +28,25 @@ const DashBoard = ({ data, groupData }: Props) => {
       await setDoc(doc(db, "groups", groupId), {
         groupId: groupId,
         groupName: ref.current.value,
-        member: []
       })
       ref.current.value = "";
     }
   }
 
   const handleJoinGroup = async(id: string) => {
-    const targetGroup = groupData.find((group) => group.groupId === id);
-    if (targetGroup) {
-      //既に同じユーザーが存在しているときは新しく追加しない
-      //退室時に削除するので同じユーザーは存在しないようにする
-      if (!targetGroup.member.some((member) => member.userId === data.id)) {
-        const newMembers = [...targetGroup.member, { userId: data.id, displayName: data.displayName}];
-        console.log(newMembers)
-        const groupDocRef = doc(db, "groups", id);
-        await updateDoc(groupDocRef, { member: newMembers });
-      } else {
-        console.log("ユーザーは既にグループに参加しています。");
-      }
-    } else{
-      console.log("対応するグループが見つかりません。");
-    } 
+    const memberCollectionRef = collection(db, "groups", id, "members");
+    const querySnapshot = await getDocs(
+      query(memberCollectionRef, where("userId", "==", data.id))
+    );
+    if(querySnapshot.size === 0) {
+      await addDoc(memberCollectionRef, {
+        userId: data.id,
+        displayName: data.displayName,
+        choice: ""
+      })
+    } else {
+      console.log("ユーザーは既に存在します。")
+    }
   }
 
   return (

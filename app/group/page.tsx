@@ -39,8 +39,7 @@ const page = () => {
           setMember(membersArray)
         })
         //グループ名とゲームの状態を取得
-        const groupCollectionDocRef = collection(db, "groups")
-        const statusDocRef = query(groupCollectionDocRef, where("groupId", "==", params.id))
+        const statusDocRef = query(collection(db, "groups"), where("groupId", "==", params.id))
         onSnapshot(statusDocRef, (querySnapshot) => {
           querySnapshot.docs.forEach((doc) => {
             const gameStatus: string = doc.data().status
@@ -133,11 +132,18 @@ const page = () => {
         await deleteDoc(docRef);
       }
     }
-    console.log("削除しました。")
   }
 
-  const handleDeleteGroup = () => {
-
+  const handleDeleteGroup = async() => {
+    if(params.id){
+      const groupDocRef = doc(db, "groups", params.id);
+      const memberDocRef = collection(db, "groups", params.id, "members");
+      const querySnapshot = await getDocs(memberDocRef);
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref)
+      })
+      deleteDoc(groupDocRef);
+    }
   }
 
   return (

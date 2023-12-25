@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { db } from '../../firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 import { auth } from "../../firebase"
 
 const Login = () => {
@@ -14,7 +14,7 @@ const Login = () => {
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-      addDoc(collection(db, "users"), {
+      setDoc(doc(db, "users", user.uid), {
         displayName: isName,
         userId: user.uid
       })
@@ -30,7 +30,7 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        addDoc(collection(db, "users"), {
+        setDoc(doc(db, "users", user.uid), {
           displayName: isName,
           userId: user.uid
         })

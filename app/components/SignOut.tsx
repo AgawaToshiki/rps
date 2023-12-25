@@ -6,6 +6,7 @@ import { deleteDoc, doc, collection, where, query, getDocs } from 'firebase/fire
 
 
 const SignOut = () => {
+
   const signOutUser = async() => {
     const user = auth.currentUser
     if(user){
@@ -18,13 +19,12 @@ const SignOut = () => {
       await deleteDoc((doc(db, "users", user.uid)));
       await signOut(auth)
       .then(() => {
-        console.log("logout success!")
+        console.log("logout success")
       })
       .catch((error) => {
         alert('サインアウトが正常にできませんでした（' + error.message + '）')
       });
     }
-
   }
 
   

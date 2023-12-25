@@ -16,6 +16,7 @@ type Props = {
     groupName: string;
     groupId: string;
     status: string;
+    winnerHand: string;
   }[],
 }
 
@@ -30,7 +31,8 @@ const DashBoard = ({ data, groupData }: Props) => {
       await setDoc(doc(db, "groups", groupId), {
         groupId: groupId,
         groupName: ref.current.value,
-        status: "waiting"
+        status: "waiting",
+        winnerHand: "no Hand"
       })
       ref.current.value = "";
     }

@@ -21,7 +21,8 @@ const page = () => {
   const [isAllReady, setAllReady] = useState<boolean>(false);
   const [selectedHand, setSelectedHand] = useState<string>("");
   const [groupName, setGroupName] = useState<string>("");
-  // const [selectedAllHand, setSelectedAllHand] = useState<[]>([])
+  const [winner, setWinner] = useState<string>("");
+
 
   useEffect(() => {
       if(params.id){
@@ -65,7 +66,50 @@ const page = () => {
     //手のリセットはゲームが終わったタイミング
     if(isGameStart === "waiting")
       setSelectedHand("")
+    //ゲーム状態が変更されるタイミングで勝ちの手を取得
+    const winnerQuery = query(collection(db, "groups"), where("groupId", "==", params.id));
+    onSnapshot(winnerQuery, (querySnapshot) => {
+      querySnapshot.docs.forEach((doc) => {
+        setWinner(doc.data().winnerHand)
+      })
+    })
   }, [isGameStart])
+
+
+  const winnerRps = (choices: string[]): string => {
+    const allChoiceRock = choices.every((hand) => {
+      return hand === "rock"
+    })
+    const allChoicePaper = choices.every((hand) => {
+      return hand === "paper"
+    })
+    const allChoiceScissors = choices.every((hand) => {
+      return hand === "scissors"
+    })
+    //全ての手が同じ場合はドロー:trueを返す
+    const drawFlag = allChoiceRock || allChoicePaper || allChoiceScissors
+
+    const rock = choices.includes("rock");
+    const paper = choices.includes("paper");
+    const scissors = choices.includes("scissors");
+    //全ての種類の手が場に出ている場合はドロー:trueを返す
+    const drawFlag2 = rock && paper && scissors
+
+    //引き分けパターンを除いた残りの勝ちパターン
+    if(!drawFlag && !drawFlag2){
+      if(!rock && paper && scissors){
+        return "scissors"
+      } else if (!paper && rock && scissors){
+        return "rock"
+      } else if (!scissors && rock && paper){
+        return "paper"
+      } else {
+        return "draw"
+      }
+    } else {
+      return "draw"
+    }
+  }
 
   const handleChooseHand = async(choice: string) => {
     //手の選択をリアルタイムでfirestoreに反映
@@ -86,17 +130,20 @@ const page = () => {
   const handleGameStart = async() => {
     //ゲームをスタート・全員の手を取得
     if(params.id){
+      const memberQuery = query(collection(db, "groups", params.id, "members"));
+      const querySnapshot = await getDocs(memberQuery);
+      const choiceArray: string[] = [];
+      querySnapshot.forEach((doc) => {
+        choiceArray.push(doc.data().choice);
+      });
+      console.log(choiceArray)
+
       const statusDoc = doc(db, "groups", params.id)
       await updateDoc(statusDoc, {
-        status: "playing"
+        status: "playing",
+        winnerHand: winnerRps(choiceArray)
       })
-      // const memberQuery = query(collection(db, "groups", params.id, "members"));
-      // onSnapshot(memberQuery, (querySnapshot) => {
-      //   querySnapshot.docs.forEach((doc) => {
-      //     setSelectedAllHand(doc.data().choice);
-      //   })
-      // })
-      // console.log(selectedAllHand)
+
       setGameStart("playing")
     }
   }
@@ -106,7 +153,8 @@ const page = () => {
     if(params.id && auth.currentUser){
       const statusDoc = doc(db, "groups", params.id)
       await updateDoc(statusDoc, {
-        status: "waiting"
+        status: "waiting",
+        winnerHand: "no Hand"
       })
       const memberQuery = query(collection(db, "groups", params.id, "members"))
       const memberQuerySnapshot = await getDocs(memberQuery);
@@ -149,6 +197,9 @@ const page = () => {
   return (
     <div className="min-h-screen">
       <p className="flex justify-center w-full py-10 text-lg">グループ名:{ groupName }</p>
+      {winner === selectedHand 
+        ? (<p className="flex justify-center w-full py-10 text-lg">You Are a Winner!</p>)
+         : winner === "no Hand" ? <p className="flex justify-center w-full py-10 text-lg">Draw</p> : <p className="flex justify-center w-full py-10 text-lg">You Are a Loser...</p>}
       <div className="p-10 mb-20">
         <div className="flex max-w-[1920px] w-full">
           <p className="flex w-[50%]">参加者</p>
@@ -156,7 +207,7 @@ const page = () => {
         </div>
         { getMember.map((member) => (
           <div key={ member.userId } className="flex w-full">
-            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2">
+            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2" >
               <p>{ member.displayName }</p>
             </div>
             <div className="flex justify-center items-center bg-pink-300 w-[50%] h-[80px] p-2">

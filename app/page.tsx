@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Login from './components/Login';
 import DashBoard from './components/DashBoard';
-import SignOut from './components/SignOut';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
@@ -15,7 +14,8 @@ export default function Home() {
   const [group, setGroup] = useState<{ 
     groupId: string, 
     groupName: string,
-    status: string
+    status: string,
+    winnerHand: string
   }[]>([]);
 
   useEffect(() => {
@@ -41,7 +41,8 @@ export default function Home() {
         return { 
           groupId: groupData.groupId, 
           groupName: groupData.groupName,
-          status: groupData.status
+          status: groupData.status,
+          winnerHand: groupData.winnerHand
         }
       })
       setGroup(group)

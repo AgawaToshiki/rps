@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 
-const page = () => {
+const GroupPage = () => {
   const nextQuery = useSearchParams()
   const params = { 
       id: nextQuery.get('id'), 
@@ -50,7 +50,7 @@ const page = () => {
           })
         })
       }
-  }, [])
+  }, [params.id])
 
   useEffect(() => {
     //Ready状態か監視
@@ -73,7 +73,7 @@ const page = () => {
         setWinner(doc.data().winnerHand)
       })
     })
-  }, [isGameStart])
+  }, [isGameStart, params.id])
 
 
   const winnerRps = (choices: string[]): string => {
@@ -136,7 +136,6 @@ const page = () => {
       querySnapshot.forEach((doc) => {
         choiceArray.push(doc.data().choice);
       });
-      console.log(choiceArray)
 
       const statusDoc = doc(db, "groups", params.id)
       await updateDoc(statusDoc, {
@@ -316,4 +315,4 @@ const page = () => {
   )
 }
 
-export default page
+export default GroupPage

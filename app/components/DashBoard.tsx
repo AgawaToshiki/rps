@@ -56,10 +56,10 @@ const DashBoard = ({ data, groupData }: Props) => {
   }
 
   return (
-    <div className="">
+    <div>
       <p className="flex justify-center max-w-[1920px] w-full py-10 text-lg">ようこそ{ data.displayName }さん</p>
       <GroupList>
-        <div className="grid grid-cols-4 max-md:grid-cols-3">
+        <div className="grid grid-cols-4 max-md:grid-cols-3 gap-1">
           {groupData.map((group) => {
             return (
               <Link
@@ -77,9 +77,9 @@ const DashBoard = ({ data, groupData }: Props) => {
           })}
         </div>
       </GroupList>
-      <div className="flex justify-between max-w-[1920px] w-[50%] p-10 absolute bottom-0">
+      <div className="flex justify-start gap-[10px] max-w-[1920px] w-full p-10 absolute bottom-0 max-md:flex-col-reverse">
         <SignOut />
-        <div className="flex gap-[1px]">
+        <div className="flex gap-[1px] max-sm:flex-col max-md:pb-4">
           <input 
             type="text" 
             ref={ ref } 

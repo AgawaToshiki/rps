@@ -195,22 +195,27 @@ const page = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div>
       <p className="flex justify-center w-full py-10 text-lg">グループ名:{ groupName }</p>
       {winner === selectedHand 
-        ? (<p className="flex justify-center w-full py-10 text-lg">You Are a Winner!</p>)
-         : winner === "no Hand" ? <p className="flex justify-center w-full py-10 text-lg">Draw</p> : <p className="flex justify-center w-full py-10 text-lg">You Are a Loser...</p>}
-      <div className="p-10 mb-20">
+        ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
+        : winner === "draw" 
+         ? <p className="flex justify-center w-full py-10 text-lg bg-gray-100">Draw</p> 
+         : winner === "no Hand"
+          ? <p></p>
+          : <p className="flex justify-center w-full py-10 text-lg bg-blue-100">Lose...</p>
+      }
+      <div className="p-10">
         <div className="flex max-w-[1920px] w-full">
           <p className="flex w-[50%]">参加者</p>
           <p className="flex w-[50%]">じゃんけん</p>
         </div>
         { getMember.map((member) => (
           <div key={ member.userId } className="flex w-full">
-            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2" >
+            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2 mb-2" >
               <p>{ member.displayName }</p>
             </div>
-            <div className="flex justify-center items-center bg-pink-300 w-[50%] h-[80px] p-2">
+            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2">
               {isGameStart === "playing"
                 ? (<div>
                   {member.choice
@@ -220,7 +225,7 @@ const page = () => {
                           width={100}
                           height={100}
                           priority={false}
-                          className="w-[50px] h-auto"
+                          className="w-[40px] h-auto"
                         />
                       )
                     : (<p>waiting...</p>)
@@ -241,11 +246,11 @@ const page = () => {
           </div>
         )) }
       </div>
-      <div className="flex justify-center w-full mb-10 gap-4">
+      <div className="flex justify-center w-full pb-10 gap-4">
         <button 
           onClick={() => handleChooseHand('rock')} 
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'rock' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200`}>
+          className={`${selectedHand === 'rock' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
           <Image 
             src="/images/rock.png"
             alt=""
@@ -258,7 +263,7 @@ const page = () => {
         <button 
           onClick={() => handleChooseHand('scissors')}
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'scissors' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200`}>
+          className={`${selectedHand === 'scissors' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
           <Image 
             src="/images/scissors.png"
             alt=""
@@ -271,7 +276,7 @@ const page = () => {
         <button 
           onClick={() => handleChooseHand('paper')}
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'paper' ? 'bg-red-200' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200`}>
+          className={`${selectedHand === 'paper' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
           <Image 
             src="/images/paper.png"
             alt=""
@@ -288,8 +293,8 @@ const page = () => {
           (
             <button
               onClick={ handleGameRestart }  
-              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200">
-                もう1回じゃんけんする
+              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                Restart
             </button>
             )
           : 
@@ -297,13 +302,13 @@ const page = () => {
             <button 
               onClick={ handleGameStart } 
               disabled={ !isAllReady } 
-              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200">
+              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
                 Start
             </button>
           )
         }
       </div>
-      <div className="flex justify-start gap-[1px] max-w-[1920px] w-[50%] p-10 absolute bottom-0">
+      <div className="flex justify-start gap-[1px] max-w-[1920px] w-full p-10 absolute bottom-0">
         <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2">退室</Link>
         <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2">グループ削除</Link>
       </div>

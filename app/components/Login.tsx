@@ -53,23 +53,27 @@ const Login = () => {
             placeholder="ニックネーム" 
             className="flex justify-center max-w-[1920px] mx-auto mb-10 border-2 border-font-color p-2"
           />
-        <div className="flex justify-center gap-[1px]">
-          <input 
-            type="text" 
-            value={ isEmail } 
-            onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setEmail(e.target.value)} 
-            placeholder="Email" 
-            className="border-2 border-font-color p-2"
-          />
-          <input 
-            type="text" 
-            value={ isPassword } 
-            onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setPassword(e.target.value)} 
-            placeholder="パスワード" 
-            className="border-2 border-font-color p-2"
-          />
-          <button type="submit" onClick={ signIn } className="border-2 border-font-color p-2">ログイン</button>
-          <button type="submit" onClick={ signUp } className="border-2 border-font-color p-2">登録</button>
+        <div className="flex flex-col justify-center gap-[10px]">
+          <div className="flex w-full gap-[1px]">
+            <input 
+              type="text" 
+              value={ isEmail } 
+              onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setEmail(e.target.value)} 
+              placeholder="Email" 
+              className="w-[50%] border-2 border-font-color p-2"
+            />
+            <input 
+              type="text" 
+              value={ isPassword } 
+              onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setPassword(e.target.value)} 
+              placeholder="パスワード" 
+              className="w-[50%] border-2 border-font-color p-2"
+            />
+          </div>
+          <div className="flex w-full gap-[1px]">
+            <button type="submit" onClick={ signIn } className="w-[50%] border-2 border-font-color p-2">ログイン</button>
+            <button type="submit" onClick={ signUp } className="w-[50%] border-2 border-font-color p-2">登録</button>
+          </div>
         </div>
       </div>
     </div>

@@ -44,7 +44,7 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center max-w-[1920px] min-h-screen">
-      <div className="">
+      <div>
         <h1 className="flex justify-center mb-10">うぇぶじゃんけん</h1>
         <input 
             type="text" 

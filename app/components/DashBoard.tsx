@@ -59,7 +59,7 @@ const DashBoard = ({ data, groupData }: Props) => {
   return (
     <div className="flex flex-col max-w-[1920px] w-[90%] mx-auto">
       <p className="flex justify-center w-full my-10 text-lg">ようこそ{ data.displayName }さん</p>
-      <div className="flex gap-[1px] m-10 max-sm:flex-col max-md:mb-4">
+      <div className="flex gap-[1px] my-10 max-sm:flex-col max-md:mb-4">
           <input 
             type="text" 
             ref={ ref } 
@@ -86,7 +86,7 @@ const DashBoard = ({ data, groupData }: Props) => {
           })}
         </div>
       </GroupList>
-      <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse">
+      <div className="flex justify-start gap-[10px] my-10 max-md:flex-col-reverse">
         <DeleteAccount />
         <SignOut />
       </div>

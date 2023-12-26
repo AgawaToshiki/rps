@@ -12,25 +12,29 @@ const Login = () => {
   const signUp = async() => {
     try {
       if(isPassword.length > 5) {
-        await createUserWithEmailAndPassword(auth, isEmail, isPassword)
-        .then((userCredential) => {
-        // Signed in 
-          const user = userCredential.user;
-          setDoc(doc(db, "users", user.uid), {
+        if(isName && isName.length < 12){
+          await createUserWithEmailAndPassword(auth, isEmail, isPassword)
+          .then((userCredential) => {
+          // Signed in 
+            const user = userCredential.user;
+            setDoc(doc(db, "users", user.uid), {
+              displayName: isName,
+              userId: user.uid
+            })
+          }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorCode + ":" + errorMessage)
+          });
+          if(auth.currentUser)
+          await updateProfile(auth.currentUser, {
             displayName: isName,
-            userId: user.uid
           })
-        }).catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert(errorCode + ":" + errorMessage)
-        });
-        if(auth.currentUser)
-        await updateProfile(auth.currentUser, {
-          displayName: isName,
-        })
+        } else {
+          alert("ニックネームは12文字以下で必須です")
+        }
       } else {
-        alert("パスワードは6文字以上")
+        alert("パスワードは6文字以上で必須です")
       }
     }catch (error){
       console.log(error);
@@ -74,20 +78,20 @@ const Login = () => {
             className="flex justify-center max-w-[1920px] mx-auto mb-10 border-2 border-font-color p-2"
           />
         <div className="flex flex-col justify-center gap-[10px]">
-          <div className="flex w-full gap-[1px]">
+          <div className="flex w-full gap-[1px] max-sm:flex-col">
             <input 
               type="text" 
               value={ isEmail } 
               onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setEmail(e.target.value)} 
               placeholder="Email" 
-              className="w-[50%] border-2 border-font-color p-2"
+              className="w-[50%] border-2 border-font-color p-2 max-sm:w-[100%]"
             />
             <input 
               type="text" 
               value={ isPassword } 
               onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setPassword(e.target.value)} 
               placeholder="パスワード(6文字以上)" 
-              className="w-[50%] border-2 border-font-color p-2"
+              className="w-[50%] border-2 border-font-color p-2 max-sm:w-[100%]"
             />
           </div>
           <div className="flex w-full gap-[1px]">

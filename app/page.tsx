@@ -14,8 +14,6 @@ export default function Home() {
   const [group, setGroup] = useState<{ 
     groupId: string, 
     groupName: string,
-    status: string,
-    winnerHand: string
   }[]>([]);
 
   useEffect(() => {
@@ -40,9 +38,7 @@ export default function Home() {
         const groupData = doc.data()
         return { 
           groupId: groupData.groupId, 
-          groupName: groupData.groupName,
-          status: groupData.status,
-          winnerHand: groupData.winnerHand
+          groupName: groupData.groupName
         }
       })
       setGroup(group)

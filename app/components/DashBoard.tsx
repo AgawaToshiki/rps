@@ -4,7 +4,7 @@ import Group from './Group'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import SignOut from './SignOut';
 import DeleteAccount from './DeleteAccount';
 
@@ -16,8 +16,6 @@ type Props = {
   groupData: {
     groupName: string;
     groupId: string;
-    status: string;
-    winnerHand: string;
   }[],
 }
 
@@ -26,14 +24,15 @@ const DashBoard = ({ data, groupData }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
   
   const handleNewGroup = async() => {
-    if(ref.current){
+    if(ref.current && auth.currentUser){
       const groupId = uuidv4();
       setNewGroup([...newGroup, { id: groupId, name: ref.current.value }]);
       await setDoc(doc(db, "groups", groupId), {
         groupId: groupId,
         groupName: ref.current.value,
         status: "waiting",
-        winnerHand: "no Hand"
+        winnerHand: "no Hand",
+        userId: auth.currentUser.uid
       })
       ref.current.value = "";
     }

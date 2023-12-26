@@ -42,7 +42,7 @@ const DeleteAccount = () => {
 
   
   return (
-    <button onClick={ deleteAccount } className="border-2 border-font-color p-2">アカウント削除</button>
+    <button onClick={ deleteAccount } className="border-2 border-font-color p-2 bg-red-300">アカウント削除</button>
   )
 }
 

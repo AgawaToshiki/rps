@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 
 const GroupPage = () => {
@@ -22,6 +22,7 @@ const GroupPage = () => {
   const [selectedHand, setSelectedHand] = useState<string>("");
   const [groupName, setGroupName] = useState<string>("");
   const [winner, setWinner] = useState<string>("");
+  const [isOwner, setOwner] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -45,8 +46,13 @@ const GroupPage = () => {
           querySnapshot.docs.forEach((doc) => {
             const gameStatus: string = doc.data().status
             const groupName: string = doc.data().groupName
+            const owner: string = doc.data().userId
             setGroupName(groupName)
             setGameStart(gameStatus)
+            if(auth.currentUser)
+            if(owner === auth.currentUser.uid){
+              setOwner(true)
+            }
           })
         })
       }
@@ -173,10 +179,10 @@ const GroupPage = () => {
 
   const handleLeaveGroup = async() => {
     if(params.id && auth.currentUser){
-      const docRef = doc(db, "groups", params.id, "members", auth.currentUser.uid);
-      const docSnapshot = await getDoc(docRef);
+      const groupMemberDocRef = doc(db, "groups", params.id, "members", auth.currentUser.uid);
+      const docSnapshot = await getDoc(groupMemberDocRef);
       if (docSnapshot.exists()) {
-        await deleteDoc(docRef);
+        await deleteDoc(groupMemberDocRef);
       }
     }
   }
@@ -193,6 +199,29 @@ const GroupPage = () => {
     }
   }
 
+  const handleMemberDelete = async(id: string) => {
+    if(params.id){
+      const groupMemberDocRef = doc(db, "groups", params.id, "members", id)
+      const docSnapshot = await getDoc(groupMemberDocRef);
+      if(docSnapshot.exists()) {
+        await deleteDoc(groupMemberDocRef);
+      }
+    }
+  }
+
+  const handleReJoin = async() => {
+    if(params.id && auth.currentUser){
+      const memberDocRef = doc(db, "groups", params.id, "members", auth.currentUser.uid);
+      await setDoc(memberDocRef, {
+        userId: auth.currentUser.uid,
+        displayName: auth.currentUser.displayName,
+        choice: ""
+      })
+    }
+
+
+  }
+
   return (
     <div>
       <p className="flex justify-center w-full py-10 text-lg">グループ名:{ groupName }</p>
@@ -204,14 +233,14 @@ const GroupPage = () => {
           ? <p></p>
           : <p className="flex justify-center w-full py-10 text-lg bg-blue-100">Lose...</p>
       }
-      <div className="m-10">
+      <div className="m-10 max-md:mx-2">
         <div className="flex max-w-[1920px] w-full">
           <p className="flex w-[50%]">参加者</p>
           <p className="flex w-[50%]">じゃんけん</p>
         </div>
         { getMember.map((member) => (
-          <div key={ member.userId } className="flex w-full">
-            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2 mb-2" >
+          <div key={ member.userId } className="flex w-full items-center mb-2">
+            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2" >
               <p>{ member.displayName }</p>
             </div>
             <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2">
@@ -224,7 +253,7 @@ const GroupPage = () => {
                           width={100}
                           height={100}
                           priority={false}
-                          className="w-[40px] h-auto"
+                          className="w-[40px] h-auto max-md:w-[30px]"
                         />
                       )
                     : (<p>waiting...</p>)
@@ -242,6 +271,16 @@ const GroupPage = () => {
                   )
               }
             </div>
+            {isOwner 
+              ? (
+                  <div className="w-[10%] text-center max-md:w-[20%]">
+                    <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">退室</button>
+                  </div>
+                )
+              : (
+                <div></div>
+              )
+            }
           </div>
         )) }
       </div>
@@ -249,67 +288,82 @@ const GroupPage = () => {
         <button 
           onClick={() => handleChooseHand('rock')} 
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'rock' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
+          className={`${selectedHand === 'rock' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
           <Image 
             src="/images/rock.png"
             alt=""
             width={50}
             height={52}
             priority={false}
-            className="w-[50px] h-auto"
+            className="w-[50px] h-auto max-md:w-[30px]"
           />
         </button>
         <button 
           onClick={() => handleChooseHand('scissors')}
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'scissors' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
+          className={`${selectedHand === 'scissors' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
           <Image 
             src="/images/scissors.png"
             alt=""
             width={64}
             height={85}
             priority={false}
-            className="w-[50px] h-auto"
+            className="w-[50px] h-auto max-md:w-[30px]"
           />
         </button>
         <button 
           onClick={() => handleChooseHand('paper')}
           disabled={ isGameStart === "playing" }
-          className={`${selectedHand === 'paper' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
+          className={`${selectedHand === 'paper' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
           <Image 
             src="/images/paper.png"
             alt=""
             width={64}
             height={68}
             priority={false}
-            className="w-[50px] h-auto"
+            className="w-[50px] h-auto max-md:w-[30px]"
           />
         </button>
       </div>
-      <div className="flex justify-center w-full">
-        {isGameStart === "playing"
-          ? 
-          (
-            <button
-              onClick={ handleGameReset }  
-              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                Reset
-            </button>
-            )
-          : 
-          (
-            <button 
-              onClick={ handleGameStart } 
-              disabled={ !isAllReady } 
-              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                Start
-            </button>
-          )
-        }
-      </div>
-      <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse">
+      {isOwner 
+        ? 
+        (
+          <div className="flex justify-center w-full">
+            {isGameStart === "playing"
+              ? 
+              (
+                <button
+                  onClick={ handleGameReset }  
+                  className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                    Reset
+                </button>
+                )
+              : 
+              (
+                <button 
+                  onClick={ handleGameStart } 
+                  disabled={ !isAllReady } 
+                  className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                    Start
+                </button>
+              )
+            }
+        </div>
+        )
+        : 
+        (<div></div>)
+      }
+      <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse max-md:mx-2">
+        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center bg-red-300">グループ削除</Link>
         <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">退室</Link>
-        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center">グループ削除</Link>
+        {isGameStart === "waiting"
+          ?
+          (
+            <button onClick={ handleReJoin } className="border-2 border-font-color p-2 text-center">再入室</button>
+          )
+          :
+          (<div></div>)
+        }
       </div>
     </div>
   )

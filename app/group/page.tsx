@@ -308,8 +308,8 @@ const GroupPage = () => {
         }
       </div>
       <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse">
+        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center bg-red-300">グループ削除</Link>
         <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">退室</Link>
-        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center">グループ削除</Link>
       </div>
     </div>
   )

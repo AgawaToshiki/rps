@@ -22,6 +22,7 @@ const GroupPage = () => {
   const [selectedHand, setSelectedHand] = useState<string>("");
   const [groupName, setGroupName] = useState<string>("");
   const [winner, setWinner] = useState<string>("");
+  const [isOwner, setOwner] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -45,8 +46,13 @@ const GroupPage = () => {
           querySnapshot.docs.forEach((doc) => {
             const gameStatus: string = doc.data().status
             const groupName: string = doc.data().groupName
+            const owner: string = doc.data().userId
             setGroupName(groupName)
             setGameStart(gameStatus)
+            if(auth.currentUser)
+            if(owner === auth.currentUser.uid){
+              setOwner(true)
+            }
           })
         })
       }
@@ -193,6 +199,10 @@ const GroupPage = () => {
     }
   }
 
+  const handleMemberDelete = (id: string) => {
+
+  }
+
   return (
     <div>
       <p className="flex justify-center w-full py-10 text-lg">グループ名:{ groupName }</p>
@@ -210,8 +220,8 @@ const GroupPage = () => {
           <p className="flex w-[50%]">じゃんけん</p>
         </div>
         { getMember.map((member) => (
-          <div key={ member.userId } className="flex w-full">
-            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2 mb-2" >
+          <div key={ member.userId } className="flex w-full items-center mb-2">
+            <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2" >
               <p>{ member.displayName }</p>
             </div>
             <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2">
@@ -242,6 +252,16 @@ const GroupPage = () => {
                   )
               }
             </div>
+            {isOwner 
+              ? (
+                  <div className="w-[10%]">
+                    <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">強制退室</button>
+                  </div>
+                )
+              : (
+                <div></div>
+              )
+            }
           </div>
         )) }
       </div>

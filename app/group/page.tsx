@@ -147,7 +147,7 @@ const GroupPage = () => {
     }
   }
 
-  const handleGameRestart = async() => {
+  const handleGameReset = async() => {
     //ゲームをリセット・全員の手を空に
     if(params.id && auth.currentUser){
       const statusDoc = doc(db, "groups", params.id)
@@ -291,9 +291,9 @@ const GroupPage = () => {
           ? 
           (
             <button
-              onClick={ handleGameRestart }  
+              onClick={ handleGameReset }  
               className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                Restart
+                Reset
             </button>
             )
           : 

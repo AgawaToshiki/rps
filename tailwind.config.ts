@@ -18,7 +18,7 @@ const config: Config = {
         'font-color': '#374151'
       },
       height: {
-        'sm-height': 'calc(var(--vh, 1vh) * 100)'
+        'sm': 'calc(var(--vh, 1vh) * 100)'
       }
     },
   },

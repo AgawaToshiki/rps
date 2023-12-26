@@ -274,7 +274,7 @@ const GroupPage = () => {
             {isOwner 
               ? (
                   <div className="w-[10%] text-center max-md:w-[20%]">
-                    <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">退室</button>
+                    <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">観戦</button>
                   </div>
                 )
               : (

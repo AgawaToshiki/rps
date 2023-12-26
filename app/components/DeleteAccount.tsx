@@ -29,7 +29,7 @@ const DeleteAccount = () => {
           await deleteUser(user)
           console.log("delete account success")
         } catch {
-          alert("アカウントが削除できませんでした。")
+          alert("アカウントが削除できませんでした")
         }
       }
     }

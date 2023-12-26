@@ -12,7 +12,7 @@ const Login = () => {
   const signUp = async() => {
     try {
       if(isPassword.length > 5) {
-        if(isName && isName.length < 12){
+        if(isName && isName.length < 13){
           await createUserWithEmailAndPassword(auth, isEmail, isPassword)
           .then((userCredential) => {
           // Signed in 

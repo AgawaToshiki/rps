@@ -128,7 +128,7 @@ const GroupPage = () => {
         await updateDoc(memberDocRef, { choice });
         setSelectedHand(choice)
       } else {
-        console.log("メンバーが見つかりません。")
+        console.log("メンバーが見つかりません")
       }
     }
   }
@@ -354,7 +354,13 @@ const GroupPage = () => {
         (<div></div>)
       }
       <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse max-md:mx-2">
-        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center bg-red-300">グループ削除</Link>
+        {isOwner 
+          ? 
+          (
+            <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center bg-red-300">グループ削除</Link>
+          )
+          : (<div></div>)
+        }
         <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">退室</Link>
         {isGameStart === "waiting"
           ?

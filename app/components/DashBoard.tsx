@@ -25,16 +25,20 @@ const DashBoard = ({ data, groupData }: Props) => {
   
   const handleNewGroup = async() => {
     if(ref.current && auth.currentUser){
-      const groupId = uuidv4();
-      setNewGroup([...newGroup, { id: groupId, name: ref.current.value }]);
-      await setDoc(doc(db, "groups", groupId), {
-        groupId: groupId,
-        groupName: ref.current.value,
-        status: "waiting",
-        winnerHand: "no Hand",
-        userId: auth.currentUser.uid
-      })
-      ref.current.value = "";
+      if(ref.current.value !== "" && ref.current.value.length < 13){
+        const groupId = uuidv4();
+        setNewGroup([...newGroup, { id: groupId, name: ref.current.value }]);
+        await setDoc(doc(db, "groups", groupId), {
+          groupId: groupId,
+          groupName: ref.current.value,
+          status: "waiting",
+          winnerHand: "no Hand",
+          userId: auth.currentUser.uid
+        })
+        ref.current.value = "";
+      } else {
+        alert("グループ名は12文字以下で必須です")
+      }
     }
   }
 
@@ -51,7 +55,7 @@ const DashBoard = ({ data, groupData }: Props) => {
         choice: ""
       })
     } else {
-      console.log("ユーザーは既に存在します。")
+      console.log("ユーザーは既に存在します")
     }
   }
 

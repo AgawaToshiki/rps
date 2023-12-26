@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db } from '../../firebase';
 import { setDoc, doc } from 'firebase/firestore';
 import { auth } from "../../firebase"
@@ -9,37 +9,53 @@ const Login = () => {
   const [isEmail, setEmail] = useState<string>("")
   const [isPassword, setPassword] = useState<string>("")
 
-  const signUp = () => {
-    createUserWithEmailAndPassword(auth, isEmail, isPassword)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      setDoc(doc(db, "users", user.uid), {
-        displayName: isName,
-        userId: user.uid
-      })
-    }).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(errorCode + ":" + errorMessage)
-    });
+  const signUp = async() => {
+    try {
+      await createUserWithEmailAndPassword(auth, isEmail, isPassword)
+        .then((userCredential) => {
+        // Signed in 
+          const user = userCredential.user;
+          setDoc(doc(db, "users", user.uid), {
+            displayName: isName,
+            userId: user.uid
+          })
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorCode + ":" + errorMessage)
+        });
+        if(auth.currentUser)
+        await updateProfile(auth.currentUser, {
+          displayName: isName,
+        })
+    }catch (error){
+      console.log(error);
+    }
   }
 
-  const signIn = () => {
-      signInWithEmailAndPassword(auth, isEmail, isPassword)
-      .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        setDoc(doc(db, "users", user.uid), {
-          displayName: isName,
-          userId: user.uid
+  const signIn = async() => {
+    try{
+      await signInWithEmailAndPassword(auth, isEmail, isPassword)
+        .then((userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          setDoc(doc(db, "users", user.uid), {
+            displayName: isName,
+            userId: user.uid
+          })
         })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorCode + ":" + errorMessage)
+      });
+      if(auth.currentUser)
+      await updateProfile(auth.currentUser, {
+        displayName: isName,
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        alert(errorCode + ":" + errorMessage)
-    });
+    } catch(error) {
+      console.log(error);
+    }
   }
 
   return (

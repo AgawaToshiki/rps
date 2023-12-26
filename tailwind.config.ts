@@ -16,9 +16,6 @@ const config: Config = {
       colors: {
         'main-color': '#FFF9F9',
         'font-color': '#374151'
-      },
-      height: {
-        'sm': 'calc(var(--vh, 1vh) * 100)'
       }
     },
   },

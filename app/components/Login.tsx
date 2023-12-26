@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { db } from '../../firebase';
 import { setDoc, doc } from 'firebase/firestore';
-import { auth } from "../../firebase"
+import { auth } from "../../firebase";
 
 const Login = () => {
   const [isName, setName] = useState<string>("")
@@ -11,7 +11,8 @@ const Login = () => {
 
   const signUp = async() => {
     try {
-      await createUserWithEmailAndPassword(auth, isEmail, isPassword)
+      if(isPassword.length > 5) {
+        await createUserWithEmailAndPassword(auth, isEmail, isPassword)
         .then((userCredential) => {
         // Signed in 
           const user = userCredential.user;
@@ -28,6 +29,9 @@ const Login = () => {
         await updateProfile(auth.currentUser, {
           displayName: isName,
         })
+      } else {
+        alert("パスワードは6文字以上")
+      }
     }catch (error){
       console.log(error);
     }
@@ -82,7 +86,7 @@ const Login = () => {
               type="text" 
               value={ isPassword } 
               onChange={(e: React.ChangeEvent<HTMLInputElement>)=> setPassword(e.target.value)} 
-              placeholder="パスワード" 
+              placeholder="パスワード(6文字以上)" 
               className="w-[50%] border-2 border-font-color p-2"
             />
           </div>

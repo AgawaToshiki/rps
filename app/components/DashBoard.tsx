@@ -57,10 +57,18 @@ const DashBoard = ({ data, groupData }: Props) => {
   }
 
   return (
-    <div>
-      <p className="flex justify-center max-w-[1920px] w-full py-10 text-lg">ようこそ{ data.displayName }さん</p>
+    <div className="flex flex-col max-w-[1920px] w-[90%] mx-auto">
+      <p className="flex justify-center w-full my-10 text-lg">ようこそ{ data.displayName }さん</p>
+      <div className="flex gap-[1px] my-10 max-sm:flex-col max-md:mb-4">
+          <input 
+            type="text" 
+            ref={ ref } 
+            className="border-2 border-font-color p-2" 
+          />
+          <button onClick={ handleNewGroup } className="border-2 border-font-color p-2">新規グループ作成</button>
+        </div>
       <GroupList>
-        <div className="grid grid-cols-4 max-md:grid-cols-3 gap-1">
+        <div className="grid grid-cols-4 my-10 max-md:grid-cols-3 max-sm:grid-cols-2 gap-1">
           {groupData.map((group) => {
             return (
               <Link
@@ -78,17 +86,9 @@ const DashBoard = ({ data, groupData }: Props) => {
           })}
         </div>
       </GroupList>
-      <div className="flex justify-start gap-[10px] max-w-[1920px] w-full p-10 absolute bottom-0 max-md:flex-col-reverse">
+      <div className="flex justify-start gap-[10px] my-10 max-md:flex-col-reverse">
         <DeleteAccount />
         <SignOut />
-        <div className="flex gap-[1px] max-sm:flex-col max-md:pb-4">
-          <input 
-            type="text" 
-            ref={ ref } 
-            className="border-2 border-font-color p-2" 
-          />
-          <button onClick={ handleNewGroup } className="border-2 border-font-color p-2">新規グループ作成</button>
-        </div>
       </div>
     </div>
   )

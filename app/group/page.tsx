@@ -204,7 +204,7 @@ const GroupPage = () => {
           ? <p></p>
           : <p className="flex justify-center w-full py-10 text-lg bg-blue-100">Lose...</p>
       }
-      <div className="p-10">
+      <div className="m-10">
         <div className="flex max-w-[1920px] w-full">
           <p className="flex w-[50%]">参加者</p>
           <p className="flex w-[50%]">じゃんけん</p>
@@ -245,7 +245,7 @@ const GroupPage = () => {
           </div>
         )) }
       </div>
-      <div className="flex justify-center w-full pb-10 gap-4">
+      <div className="flex justify-center w-full mb-10 gap-4">
         <button 
           onClick={() => handleChooseHand('rock')} 
           disabled={ isGameStart === "playing" }
@@ -307,9 +307,9 @@ const GroupPage = () => {
           )
         }
       </div>
-      <div className="flex justify-start gap-[1px] max-w-[1920px] w-full p-10 absolute bottom-0">
-        <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2">退室</Link>
-        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2">グループ削除</Link>
+      <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse">
+        <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">退室</Link>
+        <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center">グループ削除</Link>
       </div>
     </div>
   )

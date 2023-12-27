@@ -15,7 +15,8 @@ const config: Config = {
       },
       colors: {
         'main-color': '#FFF9F9',
-        'font-color': '#374151'
+        'font-color': '#374151',
+        'card-color': '#FDFBF5',
       }
     },
   },

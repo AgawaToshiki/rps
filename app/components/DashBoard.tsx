@@ -62,14 +62,17 @@ const DashBoard = ({ data, groupData }: Props) => {
   return (
     <div className="flex flex-col max-w-[1920px] w-[90%] mx-auto max-sm:w-[95%]">
       <p className="flex justify-center w-full my-10 text-2xl">ようこそ{ data.displayName }さん</p>
-      <div className="flex gap-[1px] my-10 max-md:flex-col max-md:mb-4 max-md:gap-[10px]">
+      <div className="flex gap-[1px] my-10 max-md:flex-col max-md:gap-[10px]">
           <input 
             type="text" 
             ref={ ref } 
             className="border-2 border-font-color p-2" 
           />
           <button onClick={ handleNewGroup } className="border-2 border-font-color p-2">新規グループ作成</button>
-        </div>
+      </div>
+      <div>
+        <p className="text-xl border-b-2 pb-2">グループ一覧</p>
+      </div>
       <GroupList>
         <div className="grid grid-cols-4 my-10 max-lg:grid-cols-3 max-sm:grid-cols-2 gap-1">
           {groupData.map((group) => {

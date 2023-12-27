@@ -17,6 +17,9 @@ const config: Config = {
         'main-color': '#FFF9F9',
         'font-color': '#374151',
         'card-color': '#FDFBF5',
+      },
+      boxShadow: {
+        'card': '0px 4px 4px rgba(0, 0, 0, 0.25);'
       }
     },
   },

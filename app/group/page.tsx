@@ -224,7 +224,7 @@ const GroupPage = () => {
 
   return (
     <div>
-      <p className="flex justify-center w-full py-10 text-lg">グループ名:{ groupName }</p>
+      <p className="flex justify-center w-full py-10 text-2xl">グループ名:{ groupName }</p>
       {winner === selectedHand 
         ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
         : winner === "draw" 
@@ -241,7 +241,7 @@ const GroupPage = () => {
         { getMember.map((member) => (
           <div key={ member.userId } className="flex w-full items-center mb-2">
             <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2" >
-              <p>{ member.displayName }</p>
+              <p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">{ member.displayName }</p>
             </div>
             <div className="flex justify-center items-center bg-pink-200 w-[50%] h-[80px] p-2">
               {isGameStart === "playing"
@@ -264,8 +264,8 @@ const GroupPage = () => {
                 : (
                   <div>
                     {member.choice
-                    ? (<p>Ready</p>)
-                    : (<p>waiting...</p>)
+                    ? (<p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">Ready</p>)
+                    : (<p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">waiting...</p>)
                   }
                   </div>
                   )

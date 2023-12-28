@@ -83,26 +83,12 @@ const GroupPage = () => {
 
 
   const winnerRps = (choices: string[]): string => {
-    const allChoiceRock = choices.every((hand) => {
-      return hand === "rock"
-    })
-    const allChoicePaper = choices.every((hand) => {
-      return hand === "paper"
-    })
-    const allChoiceScissors = choices.every((hand) => {
-      return hand === "scissors"
-    })
-    //全ての手が同じ場合はドロー:trueを返す
-    const drawFlag = allChoiceRock || allChoicePaper || allChoiceScissors
 
     const rock = choices.includes("rock");
     const paper = choices.includes("paper");
     const scissors = choices.includes("scissors");
-    //全ての種類の手が場に出ている場合はドロー:trueを返す
-    const drawFlag2 = rock && paper && scissors
 
-    //引き分けパターンを除いた残りの勝ちパターン
-    if(!drawFlag && !drawFlag2){
+    //引き分けパターンを除いた勝ちパターン
       if(!rock && paper && scissors){
         return "scissors"
       } else if (!paper && rock && scissors){
@@ -112,9 +98,6 @@ const GroupPage = () => {
       } else {
         return "draw"
       }
-    } else {
-      return "draw"
-    }
   }
 
   const handleChooseHand = async(choice: string) => {

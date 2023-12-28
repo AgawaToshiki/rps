@@ -74,7 +74,7 @@ const DashBoard = ({ data, groupData }: Props) => {
         <p className="text-xl border-b-2 pb-2">グループ一覧</p>
       </div>
       <GroupList>
-        <div className="grid grid-cols-4 my-10 max-lg:grid-cols-3 max-sm:grid-cols-2 gap-1">
+        <div className="grid grid-cols-4 my-10 max-lg:grid-cols-3 max-sm:grid-cols-2 gap-2">
           {groupData.map((group) => {
             return (
               <Link

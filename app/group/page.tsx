@@ -315,20 +315,37 @@ const GroupPage = () => {
             {isGameStart === "playing"
               ? 
               (
-                <button
-                  onClick={ handleGameReset }  
-                  className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                    Reset
-                </button>
+                <div>
+                  <button
+                    onClick={ handleGameReset }  
+                    className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                      Reset
+                  </button>
+                </div>
                 )
               : 
               (
-                <button 
-                  onClick={ handleGameStart } 
-                  disabled={ !isAllReady } 
-                  className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                    Start
-                </button>
+                <div>
+                  {isAllReady
+                    ? 
+                    (
+                      <button 
+                        onClick={ handleGameStart }  
+                        className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                          Start
+                      </button>
+                    )
+                    :
+                    (
+                      <button 
+                        onClick={ handleGameStart } 
+                        disabled
+                        className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full bg-gray-200">
+                          Start
+                      </button>
+                    )
+                  }
+                </div>
               )
             }
         </div>

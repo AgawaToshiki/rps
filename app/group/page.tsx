@@ -176,6 +176,9 @@ const GroupPage = () => {
       const memberDocRef = collection(db, "groups", params.id, "members");
       const querySnapshot = await getDocs(memberDocRef);
       querySnapshot.forEach(async (doc) => {
+        await updateDoc(groupDocRef, {
+          groupName: ""
+        })
         await deleteDoc(doc.ref)
       })
       deleteDoc(groupDocRef);
@@ -207,7 +210,10 @@ const GroupPage = () => {
 
   return (
     <div>
-      <p className="flex justify-center w-full py-10 text-2xl">グループ名:{ groupName }</p>
+      { groupName === ""
+       ? (<p className="flex justify-center w-full py-10 text-2xl">グループは解散されました</p>) 
+       : (<p className="flex justify-center w-full py-10 text-2xl">グループ名:{ groupName }</p>)
+      } 
       {winner === selectedHand 
         ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
         : winner === "draw" 

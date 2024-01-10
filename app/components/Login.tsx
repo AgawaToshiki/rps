@@ -43,24 +43,32 @@ const Login = () => {
 
   const signIn = async() => {
     try{
-      await signInWithEmailAndPassword(auth, isEmail, isPassword)
-        .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          setDoc(doc(db, "users", user.uid), {
+      if(isPassword.length > 5) {
+        if(isName && isName.length < 13){
+          await signInWithEmailAndPassword(auth, isEmail, isPassword)
+            .then((userCredential) => {
+              // Signed in 
+              const user = userCredential.user;
+              setDoc(doc(db, "users", user.uid), {
+                displayName: isName,
+                userId: user.uid
+              })
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert(errorCode + ":" + errorMessage)
+          });
+          if(auth.currentUser)
+          await updateProfile(auth.currentUser, {
             displayName: isName,
-            userId: user.uid
           })
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert(errorCode + ":" + errorMessage)
-      });
-      if(auth.currentUser)
-      await updateProfile(auth.currentUser, {
-        displayName: isName,
-      })
+        } else {
+          alert("ニックネームは12文字以下で必須です")
+        }
+      } else {
+        alert("パスワードは6文字以上で必須です")
+      }
     } catch(error) {
       console.log(error);
     }

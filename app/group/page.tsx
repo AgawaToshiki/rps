@@ -215,7 +215,7 @@ const GroupPage = () => {
           <div>
             <p className="flex justify-center w-full py-10 text-2xl">グループは解散されました</p>
             <div className="m-10 max-md:mx-2">
-              <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">グループ一覧へ戻る</Link>
+              <Link href="/" className="border-2 border-font-color p-2 text-center">グループ一覧へ戻る</Link>
             </div>
           </div>
           )

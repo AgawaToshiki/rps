@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { db } from '../../firebase';
-import { setDoc, doc } from 'firebase/firestore';
 import { auth } from "../../firebase";
+import { setUserInfo } from "../utils/auth"
 
 const Login = () => {
   const [isName, setName] = useState<string>("")
@@ -14,17 +13,14 @@ const Login = () => {
       if(isPassword.length > 5) {
         if(isName && isName.length < 13){
           await createUserWithEmailAndPassword(auth, isEmail, isPassword)
-          .then((userCredential) => {
-          // Signed in 
-            const user = userCredential.user;
-            setDoc(doc(db, "users", user.uid), {
-              displayName: isName,
-              userId: user.uid
-            })
-          }).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            alert(errorCode + ":" + errorMessage)
+            .then((userCredential) => {
+              // Signed in 
+              const user = userCredential.user;
+              setUserInfo(user.uid, isName);
+            }).catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert(errorCode + ":" + errorMessage)
           });
           if(auth.currentUser)
           await updateProfile(auth.currentUser, {
@@ -42,19 +38,15 @@ const Login = () => {
   }
 
   const signIn = async() => {
-    try{
+    try {
       if(isPassword.length > 5) {
         if(isName && isName.length < 13){
           await signInWithEmailAndPassword(auth, isEmail, isPassword)
             .then((userCredential) => {
               // Signed in 
               const user = userCredential.user;
-              setDoc(doc(db, "users", user.uid), {
-                displayName: isName,
-                userId: user.uid
-              })
-            })
-            .catch((error) => {
+              setUserInfo(user.uid, isName);
+            }).catch((error) => {
               const errorCode = error.code;
               const errorMessage = error.message;
               alert(errorCode + ":" + errorMessage)

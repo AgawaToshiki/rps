@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
+import { groupMemberDelete } from '../utils/group';
 
 const GroupPage = () => {
   const nextQuery = useSearchParams()
@@ -162,11 +163,7 @@ const GroupPage = () => {
 
   const handleLeaveGroup = async() => {
     if(params.id && auth.currentUser){
-      const groupMemberDocRef = doc(db, "groups", params.id, "members", auth.currentUser.uid);
-      const docSnapshot = await getDoc(groupMemberDocRef);
-      if (docSnapshot.exists()) {
-        await deleteDoc(groupMemberDocRef);
-      }
+      groupMemberDelete(params.id, auth.currentUser.uid)
     }
   }
 
@@ -187,11 +184,7 @@ const GroupPage = () => {
 
   const handleMemberDelete = async(id: string) => {
     if(params.id){
-      const groupMemberDocRef = doc(db, "groups", params.id, "members", id)
-      const docSnapshot = await getDoc(groupMemberDocRef);
-      if(docSnapshot.exists()) {
-        await deleteDoc(groupMemberDocRef);
-      }
+      groupMemberDelete(params.id, id)
     }
   }
 

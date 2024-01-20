@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { groupMemberDelete } from '../utils/group';
+import ProtectRoute from '../components/ProtectRoute';
 
 const GroupPage = () => {
   const nextQuery = useSearchParams()
@@ -202,186 +203,188 @@ const GroupPage = () => {
   }
 
   return (
-    <div>
-      { groupName === "" 
-        ? (
-          <div>
-            <p className="flex justify-center w-full py-10 text-2xl">グループは解散されました</p>
-            <div className="m-10 max-md:mx-2">
-              <Link href="/" className="border-2 border-font-color p-2 text-center">グループ一覧へ戻る</Link>
-            </div>
-          </div>
-          )
-        : (
-        <div>
-          <p className="flex justify-center w-full py-10 text-2xl">グループ名:{ groupName }</p>
-          {winner === selectedHand 
-            ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
-            : winner === "draw" 
-            ? <p className="flex justify-center w-full py-10 text-lg bg-gray-100">Draw</p> 
-            : winner === "no Hand"
-              ? <p></p>
-              : <p className="flex justify-center w-full py-10 text-lg bg-blue-100">Lose...</p>
-          }
-          <div className="m-10 max-md:mx-2">
-            <div className="flex max-w-[1920px] w-full">
-              <p className="flex w-[50%]">参加者</p>
-              <p className="flex w-[50%]">じゃんけん</p>
-            </div>
-            { getMember.map((member) => (
-              <div key={ member.userId } className="flex w-full items-center mb-2">
-                <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[80px] p-2`} >
-                  <p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">{ member.displayName }</p>
-                </div>
-                <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[80px] p-2`}>
-                  {isGameStart === "playing"
-                    ? (<div>
-                      {member.choice
-                        ? (<Image 
-                              src={`/images/${member.choice}.png`}
-                              alt=""
-                              width={100}
-                              height={100}
-                              priority={false}
-                              className="w-[40px] h-auto max-md:w-[30px]"
-                            />
-                          )
-                        : (<p>waiting...</p>)
-                      }
-  
-                      </div>
-                      )
-                    : (
-                      <div>
-                        {member.choice
-                        ? (<p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">Ready</p>)
-                        : (<p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">waiting...</p>)
-                      }
-                      </div>
-                      )
-                  }
-                </div>
-                {isOwner 
-                  ? (
-                      <div className="w-[10%] text-center max-md:w-[20%]">
-                        <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">観戦</button>
-                      </div>
-                    )
-                  : (
-                    <div></div>
-                  )
-                }
+    <ProtectRoute>
+      <div>
+        { groupName === "" 
+          ? (
+            <div>
+              <p className="flex justify-center w-full py-10 text-2xl">グループは解散されました</p>
+              <div className="m-10 max-md:mx-2">
+                <Link href="/" className="border-2 border-font-color p-2 text-center">グループ一覧へ戻る</Link>
               </div>
-            )) }
-          </div>
-          <div className="flex justify-center w-full mb-10 gap-4">
-            <button 
-              onClick={() => handleChooseHand('rock')} 
-              disabled={ isGameStart === "playing" }
-              className={`${selectedHand === 'rock' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
-              <Image 
-                src="/images/rock.png"
-                alt=""
-                width={50}
-                height={52}
-                priority={false}
-                className="w-[50px] h-auto max-md:w-[30px]"
-              />
-            </button>
-            <button 
-              onClick={() => handleChooseHand('scissors')}
-              disabled={ isGameStart === "playing" }
-              className={`${selectedHand === 'scissors' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
-              <Image 
-                src="/images/scissors.png"
-                alt=""
-                width={64}
-                height={85}
-                priority={false}
-                className="w-[50px] h-auto max-md:w-[30px]"
-              />
-            </button>
-            <button 
-              onClick={() => handleChooseHand('paper')}
-              disabled={ isGameStart === "playing" }
-              className={`${selectedHand === 'paper' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
-              <Image 
-                src="/images/paper.png"
-                alt=""
-                width={64}
-                height={68}
-                priority={false}
-                className="w-[50px] h-auto max-md:w-[30px]"
-              />
-            </button>
-          </div>
-          {isOwner 
-            ? 
-            (
-              <div className="flex justify-center w-full">
-                {isGameStart === "playing"
-                  ? 
-                  (
-                    <div>
-                      <button
-                        onClick={ handleGameReset }  
-                        className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                          Reset
-                      </button>
-                    </div>
-                    )
-                  : 
-                  (
-                    <div>
-                      {isAllReady
-                        ? 
-                        (
-                          <button 
-                            onClick={ handleGameStart }  
-                            className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
-                              Start
-                          </button>
-                        )
-                        :
-                        (
-                          <button 
-                            onClick={ handleGameStart } 
-                            disabled
-                            className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full bg-gray-200">
-                              Start
-                          </button>
-                        )
-                      }
-                    </div>
-                  )
-                }
             </div>
             )
-            : 
-            (<div></div>)
-          }
-          <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse max-md:mx-2">
+          : (
+          <div>
+            <p className="flex justify-center w-full py-10 text-2xl">グループ名:{ groupName }</p>
+            {winner === selectedHand 
+              ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
+              : winner === "draw" 
+              ? <p className="flex justify-center w-full py-10 text-lg bg-gray-100">Draw</p> 
+              : winner === "no Hand"
+                ? <p></p>
+                : <p className="flex justify-center w-full py-10 text-lg bg-blue-100">Lose...</p>
+            }
+            <div className="m-10 max-md:mx-2">
+              <div className="flex max-w-[1920px] w-full">
+                <p className="flex w-[50%]">参加者</p>
+                <p className="flex w-[50%]">じゃんけん</p>
+              </div>
+              { getMember.map((member) => (
+                <div key={ member.userId } className="flex w-full items-center mb-2">
+                  <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[80px] p-2`} >
+                    <p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">{ member.displayName }</p>
+                  </div>
+                  <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[80px] p-2`}>
+                    {isGameStart === "playing"
+                      ? (<div>
+                        {member.choice
+                          ? (<Image 
+                                src={`/images/${member.choice}.png`}
+                                alt=""
+                                width={100}
+                                height={100}
+                                priority={false}
+                                className="w-[40px] h-auto max-md:w-[30px]"
+                              />
+                            )
+                          : (<p>waiting...</p>)
+                        }
+    
+                        </div>
+                        )
+                      : (
+                        <div>
+                          {member.choice
+                          ? (<p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">Ready</p>)
+                          : (<p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">waiting...</p>)
+                        }
+                        </div>
+                        )
+                    }
+                  </div>
+                  {isOwner 
+                    ? (
+                        <div className="w-[10%] text-center max-md:w-[20%]">
+                          <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">観戦</button>
+                        </div>
+                      )
+                    : (
+                      <div></div>
+                    )
+                  }
+                </div>
+              )) }
+            </div>
+            <div className="flex justify-center w-full mb-10 gap-4">
+              <button 
+                onClick={() => handleChooseHand('rock')} 
+                disabled={ isGameStart === "playing" }
+                className={`${selectedHand === 'rock' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
+                <Image 
+                  src="/images/rock.png"
+                  alt=""
+                  width={50}
+                  height={52}
+                  priority={false}
+                  className="w-[50px] h-auto max-md:w-[30px]"
+                />
+              </button>
+              <button 
+                onClick={() => handleChooseHand('scissors')}
+                disabled={ isGameStart === "playing" }
+                className={`${selectedHand === 'scissors' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
+                <Image 
+                  src="/images/scissors.png"
+                  alt=""
+                  width={64}
+                  height={85}
+                  priority={false}
+                  className="w-[50px] h-auto max-md:w-[30px]"
+                />
+              </button>
+              <button 
+                onClick={() => handleChooseHand('paper')}
+                disabled={ isGameStart === "playing" }
+                className={`${selectedHand === 'paper' ? 'bg-red-300' : ''} flex justify-center items-center w-[100px] h-[100px] max-md:w-[80px] max-md:h-[80px] border border-font-color rounded-full disabled:bg-gray-200 relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none`}>
+                <Image 
+                  src="/images/paper.png"
+                  alt=""
+                  width={64}
+                  height={68}
+                  priority={false}
+                  className="w-[50px] h-auto max-md:w-[30px]"
+                />
+              </button>
+            </div>
             {isOwner 
               ? 
               (
-                <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center bg-red-300">グループ削除</Link>
+                <div className="flex justify-center w-full">
+                  {isGameStart === "playing"
+                    ? 
+                    (
+                      <div>
+                        <button
+                          onClick={ handleGameReset }  
+                          className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                            Reset
+                        </button>
+                      </div>
+                      )
+                    : 
+                    (
+                      <div>
+                        {isAllReady
+                          ? 
+                          (
+                            <button 
+                              onClick={ handleGameStart }  
+                              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                                Start
+                            </button>
+                          )
+                          :
+                          (
+                            <button 
+                              onClick={ handleGameStart } 
+                              disabled
+                              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full bg-gray-200">
+                                Start
+                            </button>
+                          )
+                        }
+                      </div>
+                    )
+                  }
+              </div>
               )
-              : (<div></div>)
-            }
-            <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">退室</Link>
-            {isGameStart === "waiting"
-              ?
-              (
-                <button onClick={ handleReJoin } className="border-2 border-font-color p-2 text-center">再入室</button>
-              )
-              :
+              : 
               (<div></div>)
             }
+            <div className="flex justify-start gap-[10px] m-10 max-md:flex-col-reverse max-md:mx-2">
+              {isOwner 
+                ? 
+                (
+                  <Link href="/" onClick={ () => { handleDeleteGroup() }} className="border-2 border-font-color p-2 text-center bg-red-300">グループ削除</Link>
+                )
+                : (<div></div>)
+              }
+              <Link href="/" onClick={() => { handleLeaveGroup() }} className="border-2 border-font-color p-2 text-center">退室</Link>
+              {isGameStart === "waiting"
+                ?
+                (
+                  <button onClick={ handleReJoin } className="border-2 border-font-color p-2 text-center">再入室</button>
+                )
+                :
+                (<div></div>)
+              }
+            </div>
           </div>
-        </div>
-        )
-      }
-    </div>
+          )
+        }
+      </div>
+    </ProtectRoute>
   )
 }
 

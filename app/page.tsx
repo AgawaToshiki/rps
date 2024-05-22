@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import Login from './components/Login';
+import LoginAnonymous from './components/LoginAnonymous';
 import DashBoard from './components/DashBoard';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase";
@@ -53,7 +53,7 @@ export default function Home() {
         <DashBoard data={ user } groupData={ group } />
       </div>
     ) : (
-      <Login />
+      <LoginAnonymous />
     )}
     </>
   )

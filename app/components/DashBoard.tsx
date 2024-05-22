@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { auth, db } from "../../firebase";
 import SignOut from './SignOut';
-import DeleteAccount from './DeleteAccount';
 
 type Props = {
   data: {
@@ -92,8 +91,7 @@ const DashBoard = ({ data, groupData }: Props) => {
           })}
         </div>
       </GroupList>
-      <div className="flex justify-start gap-[10px] my-10 max-md:flex-col-reverse">
-        <DeleteAccount />
+      <div className="flex justify-start">
         <SignOut />
       </div>
     </div>

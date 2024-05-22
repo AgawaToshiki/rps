@@ -1,5 +1,5 @@
 import React from 'react';
-import { signOut } from 'firebase/auth';
+import { deleteUser } from 'firebase/auth';
 import { auth, db } from "../../firebase";
 import { deleteDoc, doc, collection, where, query, getDocs } from 'firebase/firestore';
 
@@ -17,19 +17,13 @@ const SignOut = () => {
         await deleteDoc(userDoc.ref);
       }
       await deleteDoc((doc(db, "users", user.uid)));
-      await signOut(auth)
-      .then(() => {
-        console.log("logout success")
-      })
-      .catch((error) => {
-        alert('サインアウトが正常にできませんでした（' + error.message + '）')
-      });
+      await deleteUser(user);
     }
   }
 
   
   return (
-    <button onClick={ signOutUser } className="border-2 border-font-color p-2">ログアウト</button>
+    <button onClick={ signOutUser } className="border-2 border-font-color p-2 bg-red-300">ログアウト</button>
   )
 }
 

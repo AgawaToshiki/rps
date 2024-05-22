@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { groupMemberDelete } from '../utils/group';
 import ProtectRoute from '../components/ProtectRoute';
@@ -191,15 +191,25 @@ const GroupPage = () => {
 
   const handleReJoin = async() => {
     if(params.id && auth.currentUser){
-      const memberDocRef = doc(db, "groups", params.id, "members", auth.currentUser.uid);
-      await setDoc(memberDocRef, {
-        userId: auth.currentUser.uid,
-        displayName: auth.currentUser.displayName,
-        choice: ""
-      })
+      try {
+        const uid = auth.currentUser.uid;
+        const userDocRef = doc(db, "users", uid);
+        const userDoc = await getDoc(userDocRef);
+        if(userDoc.exists()){
+          
+          const displayName = userDoc.data().displayName;
+
+          const memberDocRef = doc(db, "groups", params.id, "members", uid);
+          await setDoc(memberDocRef, {
+            userId: uid,
+            displayName: displayName,
+            choice: ""
+          })
+        }
+      }catch(error){
+        console.error(error);
+      }
     }
-
-
   }
 
   return (

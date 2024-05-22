@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { deleteUser } from 'firebase/auth';
 import { auth, db } from "../../firebase";
 import { deleteDoc, doc, collection, where, query, getDocs } from 'firebase/firestore';
@@ -6,24 +6,26 @@ import { deleteDoc, doc, collection, where, query, getDocs } from 'firebase/fire
 
 
 const SignOut = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const signOutUser = async() => {
-    const user = auth.currentUser
-    if(user){
-      const userQuery = query(collection(db, "users"), where("userId", "==", user.uid));
-      const querySnapshot = await getDocs(userQuery);
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0];
-        await deleteDoc(userDoc.ref);
+    setLoading(true);
+    try{
+      const user = auth.currentUser
+      if(user){
+        await deleteDoc((doc(db, "users", user.uid)));
+        await deleteUser(user);
       }
-      await deleteDoc((doc(db, "users", user.uid)));
-      await deleteUser(user);
+    }catch(error) {
+      console.error(error);
+    }finally {
+      setLoading(false);
     }
   }
 
   
   return (
-    <button onClick={ signOutUser } className="border-2 border-font-color p-2 bg-red-300">ログアウト</button>
+    <button onClick={ signOutUser } disabled={ isLoading } className="border-2 border-font-color p-2 bg-red-300">ログアウト</button>
   )
 }
 

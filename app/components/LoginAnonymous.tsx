@@ -4,9 +4,11 @@ import { auth } from "../../firebase";
 import { setUserInfo } from "../utils/auth"
 
 const LoginAnonymous = () => {
-  const [isName, setName] = useState<string>("")
+  const [isName, setName] = useState<string>("");
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const signIn = async() => {
+    setLoading(true);
     try {
       if(isName && isName.length < 13){
         const userCredential = await signInAnonymously(auth);
@@ -17,6 +19,8 @@ const LoginAnonymous = () => {
       }
     } catch(error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -32,7 +36,7 @@ const LoginAnonymous = () => {
             className="flex justify-center max-w-[1920px] mx-auto mb-4 border-2 border-font-color p-2"
           />
         <div className="flex flex-col justify-center gap-[10px]">
-            <button type="submit" onClick={ signIn } className="w-[100%] border-2 border-font-color p-2">Let&apos;sじゃんけん</button>
+            <button type="submit" onClick={ signIn } disabled={ isLoading } className="w-[100%] border-2 border-font-color p-2">Let&apos;sじゃんけん</button>
         </div>
       </div>
     </div>

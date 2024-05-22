@@ -32,7 +32,7 @@ const LoginAnonymous = () => {
             className="flex justify-center max-w-[1920px] mx-auto mb-4 border-2 border-font-color p-2"
           />
         <div className="flex flex-col justify-center gap-[10px]">
-            <button type="submit" onClick={ signIn } className="w-[100%] border-2 border-font-color p-2">Let'sじゃんけん</button>
+            <button type="submit" onClick={ signIn } className="w-[100%] border-2 border-font-color p-2">Let&apos;sじゃんけん</button>
         </div>
       </div>
     </div>

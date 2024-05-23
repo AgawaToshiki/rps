@@ -242,10 +242,10 @@ const GroupPage = () => {
               </div>
               { getMember.map((member) => (
                 <div key={ member.userId } className="flex w-full items-center mb-2">
-                  <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[80px] p-2`} >
+                  <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[50px] p-2`} >
                     <p className="text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">{ member.displayName }</p>
                   </div>
-                  <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[80px] p-2`}>
+                  <div className={`${isAllReady && isGameStart === "waiting" ? 'bg-yellow-100': 'bg-red-200'} flex justify-center items-center w-[50%] h-[50px] p-2`}>
                     {isGameStart === "playing"
                       ? (<div>
                         {member.choice
@@ -255,7 +255,7 @@ const GroupPage = () => {
                                 width={100}
                                 height={100}
                                 priority={false}
-                                className="w-[40px] h-auto max-md:w-[30px]"
+                                className="w-[35px] h-auto max-md:w-[30px]"
                               />
                             )
                           : (<p>waiting...</p>)

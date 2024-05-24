@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { deleteUser } from 'firebase/auth';
 import { auth, db } from "../../firebase";
-import { deleteDoc, doc, collection, where, query, getDocs } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 
 
 

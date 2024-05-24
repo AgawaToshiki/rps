@@ -14,6 +14,7 @@ export default function Home() {
   const [group, setGroup] = useState<{ 
     groupId: string, 
     groupName: string,
+    password: string | null
   }[]>([]);
 
   useEffect(() => {
@@ -38,7 +39,8 @@ export default function Home() {
         const groupData = doc.data()
         return { 
           groupId: groupData.groupId, 
-          groupName: groupData.groupName
+          groupName: groupData.groupName,
+          password: groupData.password
         }
       })
       setGroup(group)

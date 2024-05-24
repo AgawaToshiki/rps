@@ -19,20 +19,25 @@ type Props = {
 }
 
 const DashBoard = ({ data, groupData }: Props) => {
-  const [newGroup, setNewGroup] = useState<{ id: string, name: string }[]>([])
+  const [newGroup, setNewGroup] = useState<{ id: string, name: string }[]>([]);
+  const [usePassword, setUsePassword] = useState<boolean>(false);
+
   const ref = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   
   const handleNewGroup = async() => {
     if(ref.current && auth.currentUser){
       if(ref.current.value !== "" && ref.current.value.length < 13){
         const groupId = uuidv4();
+        const password = usePassword && passwordRef.current !== null && passwordRef.current.value === "" ? passwordRef.current.value : null;
         setNewGroup([...newGroup, { id: groupId, name: ref.current.value }]);
         await setDoc(doc(db, "groups", groupId), {
           groupId: groupId,
           groupName: ref.current.value,
           status: "waiting",
           winnerHand: "no Hand",
-          userId: auth.currentUser.uid
+          userId: auth.currentUser.uid,
+          password: password
         })
         ref.current.value = "";
       } else {
@@ -58,6 +63,10 @@ const DashBoard = ({ data, groupData }: Props) => {
     }
   }
 
+  const handleUsePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsePassword(e.target.checked);
+  }
+
   return (
     <div className="flex flex-col max-w-[1920px] w-[90%] mx-auto max-sm:w-[95%]">
       <p className="flex justify-center w-full my-10 text-2xl">ようこそ{ data.displayName }さん</p>
@@ -68,6 +77,22 @@ const DashBoard = ({ data, groupData }: Props) => {
             className="border-2 border-font-color p-2" 
           />
           <button onClick={ handleNewGroup } className="border-2 border-font-color p-2">新規グループ作成</button>
+      </div>
+      <div>
+        <div>
+          <input type="checkbox" id="password" onChange={ (e) => handleUsePassword(e)} />
+          <label htmlFor="password">パスワードを設定</label>
+        </div>
+        {usePassword 
+          ? 
+          ( <div>
+              <input type="password" ref={ passwordRef } className="border-2 border-font-color p-2" placeholder="パスワード"/>
+            </div>
+          ) 
+          : 
+          ( <div></div> )
+          }
+
       </div>
       <div>
         <p className="text-xl border-b-2 pb-2">グループ一覧</p>

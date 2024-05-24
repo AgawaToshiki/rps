@@ -6,7 +6,8 @@ import Image from 'next/image';
 import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { groupMemberDelete } from '../utils/group';
-import ProtectRoute from '../components/ProtectRoute';
+import { deleteToken } from '../utils/user';
+import ProtectGroupRoute from '../components/ProtectGroupRoute';
 
 const GroupPage = () => {
   const nextQuery = useSearchParams()
@@ -164,7 +165,8 @@ const GroupPage = () => {
 
   const handleLeaveGroup = async() => {
     if(params.id && auth.currentUser){
-      groupMemberDelete(params.id, auth.currentUser.uid)
+      groupMemberDelete(params.id, auth.currentUser.uid);
+      deleteToken(auth.currentUser.uid);
     }
   }
 
@@ -183,9 +185,9 @@ const GroupPage = () => {
     }
   }
 
-  const handleMemberDelete = async(id: string) => {
+  const handleMemberSpectate = async(id: string) => {
     if(params.id){
-      groupMemberDelete(params.id, id)
+      groupMemberDelete(params.id, id);
     }
   }
 
@@ -213,7 +215,7 @@ const GroupPage = () => {
   }
 
   return (
-    <ProtectRoute>
+    <ProtectGroupRoute groupId={ params.id }>
       <div>
         { groupName === "" 
           ? (
@@ -276,7 +278,7 @@ const GroupPage = () => {
                   {isOwner 
                     ? (
                         <div className="w-[10%] text-center max-md:w-[20%]">
-                          <button onClick={ () => handleMemberDelete(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">観戦</button>
+                          <button onClick={ () => handleMemberSpectate(member.userId) } className="border-2 border-font-color p-2 text-center bg-red-300">観戦</button>
                         </div>
                       )
                     : (
@@ -394,7 +396,7 @@ const GroupPage = () => {
           )
         }
       </div>
-    </ProtectRoute>
+    </ProtectGroupRoute>
   )
 }
 

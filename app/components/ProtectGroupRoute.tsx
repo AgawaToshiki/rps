@@ -5,7 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 
 
-const ProtectGroupRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectGroupRoute = ({ children, groupId }: { children: React.ReactNode, groupId: string | null }) => {
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -13,13 +13,19 @@ const ProtectGroupRoute = ({ children }: { children: React.ReactNode }) => {
         window.location.href = "/";
       }else{
         const checkToken = async() => {
-            const userDocRef = doc(db, 'users', user.uid);
-            const userSnapshot = await getDoc(userDocRef);
-            if(!userSnapshot.exists() || userSnapshot.data().groupToken !== "a"){
+          const userDocRef = doc(db, 'users', user.uid);
+          const userSnapshot = await getDoc(userDocRef);
+          if(groupId !== null){
+            const groupDocRef = doc(db, 'groups', groupId);
+            const groupSnapshot = await getDoc(groupDocRef);
+            if(!userSnapshot.exists() || !groupSnapshot.exists() || userSnapshot.data().groupToken !== groupSnapshot.data().password){
                 window.location.href = "/";
             }else{
                 setLoading(false);
             }
+          }else{
+            window.location.href = "/";
+          }
         }
         checkToken();
       }

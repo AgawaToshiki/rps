@@ -96,7 +96,7 @@ const DashBoard = ({ data, groupData }: Props) => {
   return (
     <div className="flex flex-col max-w-[1920px] w-[90%] mx-auto max-sm:w-[95%]">
       <p className="flex justify-center w-full my-10 text-2xl">ようこそ{ data.displayName }さん</p>
-      <div className="my-10">
+      <div className="mb-10">
         <div className="flex gap-[1px] mb-4 max-md:flex-col max-md:gap-[10px]">
             <input 
               type="text" 

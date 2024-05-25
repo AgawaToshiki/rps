@@ -228,7 +228,7 @@ const GroupPage = () => {
             )
           : (
           <div>
-            <p className="flex justify-center w-full py-10 text-2xl">グループ名:{ groupName }</p>
+            <p className="flex justify-center w-full my-10 text-2xl">グループ名:{ groupName }</p>
             {winner === selectedHand 
               ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
               : winner === "draw" 

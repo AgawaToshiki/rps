@@ -228,7 +228,7 @@ const GroupPage = () => {
             )
           : (
           <div>
-            <p className="flex justify-center w-full my-10 text-2xl">グループ名:{ groupName }</p>
+            <p className="flex justify-center w-full my-14 text-2xl max-md:text-lg max-md:my-10">グループ名:{ groupName }</p>
             {winner === selectedHand 
               ? (<p className="flex justify-center w-full py-10 text-lg bg-yellow-100">Win!!!</p>)
               : winner === "draw" 
@@ -237,7 +237,7 @@ const GroupPage = () => {
                 ? <p></p>
                 : <p className="flex justify-center w-full py-10 text-lg bg-blue-100">Lose...</p>
             }
-            <div className="m-10 max-md:mx-2">
+            <div className="mx-10 my-14 max-md:mx-2 max-md:my-10">
               <div className="flex max-w-[1920px] w-full">
                 <p className="flex w-[50%]">参加者</p>
                 <p className="flex w-[50%]">じゃんけん</p>
@@ -339,7 +339,7 @@ const GroupPage = () => {
                       <div>
                         <button
                           onClick={ handleGameReset }  
-                          className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                          className="flex justify-center items-center w-[200px] h-[200px] max-md:w-[150px] max-md:h-[150px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
                             Reset
                         </button>
                       </div>
@@ -352,7 +352,7 @@ const GroupPage = () => {
                           (
                             <button 
                               onClick={ handleGameStart }  
-                              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
+                              className="flex justify-center items-center w-[200px] h-[200px] max-md:w-[150px] max-md:h-[150px] border border-font-color rounded-full relative top-0 transition-all duration-200 ease-out hover:-top-[3px] hover:shadow-lg active:top-0 active:shadow-none">
                                 Start
                             </button>
                           )
@@ -361,7 +361,7 @@ const GroupPage = () => {
                             <button 
                               onClick={ handleGameStart } 
                               disabled
-                              className="flex justify-center items-center w-[200px] h-[200px] border border-font-color rounded-full bg-gray-200">
+                              className="flex justify-center items-center w-[200px] h-[200px] max-md:w-[150px] max-md:h-[150px] border border-font-color rounded-full bg-gray-200">
                                 Start
                             </button>
                           )

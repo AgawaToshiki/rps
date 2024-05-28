@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react'
+import Modal from 'react-modal';
 import GroupList from './GroupList'
 import Group from './Group'
 import Link from 'next/link'
@@ -6,6 +7,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from "../../firebase";
 import SignOut from './SignOut';
+
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+}
 
 type Props = {
   data: {
@@ -22,6 +35,9 @@ type Props = {
 const DashBoard = ({ data, groupData }: Props) => {
   const [newGroup, setNewGroup] = useState<{ id: string, name: string }[]>([]);
   const [usePassword, setUsePassword] = useState<boolean>(false);
+  const [isOpenModal, setOpenModal] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+  const [groupId, setGroupId] = useState<string>("");
 
   const ref = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -49,22 +65,51 @@ const DashBoard = ({ data, groupData }: Props) => {
     }
   }
 
-  const handleJoinGroup = async(id: string, e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleJoinGroup = async(groupId: string, e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const groupDoc = await getDoc(doc(db, "groups", id));
+    const groupDoc = await getDoc(doc(db, "groups", groupId));
     if(groupDoc.exists()){
       const groupPassword: string = groupDoc.data().password;
       if(groupPassword && groupPassword !== null){
-        const password = prompt("パスワードを入力してください");
-        if(password !== groupPassword){
-          alert("パスワードが違います");
-          return
-        }
+        setOpenModal(true);
+        setGroupId(groupId);
+      }else{
+        await addUserGroup(groupId);
       }
     }else{
       return
     }
+  }
 
+  const handleSubmit = async() => {
+    const groupDoc = await getDoc(doc(db, "groups", groupId));
+    if(groupDoc.exists()){
+      const groupPassword: string = groupDoc.data().password;
+      if(groupPassword === password){
+        await addUserGroup(groupId);
+        handleCancel();
+      }else{
+        alert("パスワードが違います");
+        handleCancel();
+      }
+    }else{
+      handleCancel();
+      return
+    }
+  }
+
+  const handleCancel = () => {
+    setOpenModal(false);
+    setPassword("");
+    setGroupId("");
+  }
+
+  const handleUsePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsePassword(e.target.checked);
+  }
+
+
+  const addUserGroup = async(id: string) => {
     const memberCollectionRef = collection(db, "groups", id, "members");
     const groupQuerySnapshot = await getDocs(
       query(memberCollectionRef, where("userId", "==", data.id))
@@ -80,17 +125,13 @@ const DashBoard = ({ data, groupData }: Props) => {
       })
 
       await updateDoc(userRef, {
-        groupToken: groupDoc.data().password
+        groupToken: password ? password : null
       })
 
       window.location.href = `/group?id=${id}`;
     } else {
       console.log("ユーザーは既に存在します")
     }
-  }
-
-  const handleUsePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsePassword(e.target.checked);
   }
 
   return (
@@ -142,6 +183,18 @@ const DashBoard = ({ data, groupData }: Props) => {
       <div className="flex justify-start">
         <SignOut />
       </div>
+      <Modal 
+        isOpen={ isOpenModal }
+        contentLabel="Modal"
+        ariaHideApp={false}
+        onRequestClose={ handleCancel }
+        style={customStyles}
+      >
+        <p>パスワードを入力してください</p>
+        <input type="password" value={ password } onChange={ (e) => setPassword(e.target.value) } className="border-2 border-font-color p-2"/>
+        <button onClick={ handleSubmit } className="border-2 border-font-color p-2 bg-green-300">送信</button>
+        <button onClick={ handleCancel } className="border-2 border-font-color p-2 bg-red-300">キャンセル</button>
+      </Modal>
     </div>
   )
 }

@@ -190,10 +190,14 @@ const DashBoard = ({ data, groupData }: Props) => {
         onRequestClose={ handleCancel }
         style={customStyles}
       >
-        <p>パスワードを入力してください</p>
-        <input type="password" value={ password } onChange={ (e) => setPassword(e.target.value) } className="border-2 border-font-color p-2"/>
-        <button onClick={ handleSubmit } className="border-2 border-font-color p-2 bg-green-300">送信</button>
-        <button onClick={ handleCancel } className="border-2 border-font-color p-2 bg-red-300">キャンセル</button>
+        <p className="mb-4">パスワードを入力してください</p>
+        <div className="flex max-sm:flex-col gap-[1px]">
+          <input type="password" value={ password } onChange={ (e) => setPassword(e.target.value) } className="border-2 border-font-color p-2"/>
+          <div className="flex gap-[1px]">
+            <button onClick={ handleSubmit } className="border-2 border-font-color p-2 bg-green-300 max-sm:w-[50%]">送信</button>
+            <button onClick={ handleCancel } className="border-2 border-font-color p-2 bg-red-300 max-sm:w-[50%]">キャンセル</button>
+          </div>
+        </div>
       </Modal>
     </div>
   )

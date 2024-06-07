@@ -25,7 +25,7 @@ const LoginAnonymous = () => {
   }
 
   return (
-    <div className="flex justify-center items-center max-w-[1920px] min-h-screen">
+    <div className="flex justify-center items-center max-w-[1920px] min-h-screen min-h-sm-center-height">
       <div>
         <h1 className="flex justify-center mb-10 text-xl max-lg:text-lg max-md:text-base max-sm:text-sm">うぇぶじゃんけん</h1>
         <input 

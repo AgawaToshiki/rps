@@ -20,6 +20,9 @@ const config: Config = {
       },
       boxShadow: {
         'card': '0px 4px 4px rgba(0, 0, 0, 0.25);'
+      },
+      minHeight: {
+        'sm-center-height': 'calc(var(--vh, 1vh) * 100)'
       }
     },
   },

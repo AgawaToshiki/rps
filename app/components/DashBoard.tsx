@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Modal from 'react-modal';
 import GroupList from './GroupList'
 import Group from './Group'
 import Link from 'next/link'
 import { v4 as uuidv4 } from 'uuid';
-import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from "../../firebase";
 import SignOut from './SignOut';
 
@@ -41,6 +41,12 @@ const DashBoard = ({ data, groupData }: Props) => {
 
   const ref = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if(!auth.currentUser){
+      throw new Error("ログインしていません");
+    }
+  },[])
   
   const handleNewGroup = async() => {
     if(ref.current && auth.currentUser){
@@ -111,10 +117,6 @@ const DashBoard = ({ data, groupData }: Props) => {
 
   const addUserGroup = async(id: string) => {
     const memberCollectionRef = collection(db, "groups", id, "members");
-    const groupQuerySnapshot = await getDocs(
-      query(memberCollectionRef, where("userId", "==", data.id))
-    );
-    if(groupQuerySnapshot.size === 0) {
       const memberDocRef = doc(memberCollectionRef, data.id);
       const userRef = doc(db, "users", data.id);
 
@@ -129,9 +131,6 @@ const DashBoard = ({ data, groupData }: Props) => {
       })
 
       window.location.href = `/group?id=${id}`;
-    } else {
-      console.log("ユーザーは既に存在します")
-    }
   }
 
   return (

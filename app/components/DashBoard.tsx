@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Modal from 'react-modal';
-import GroupList from './GroupList'
-import Group from './Group'
-import Link from 'next/link'
+import GroupList from './GroupList';
+import Group from './Group';
+import Link from 'next/link';
 import { v4 as uuidv4 } from 'uuid';
 import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from "../../firebase";
@@ -117,20 +117,20 @@ const DashBoard = ({ data, groupData }: Props) => {
 
   const addUserGroup = async(id: string) => {
     const memberCollectionRef = collection(db, "groups", id, "members");
-      const memberDocRef = doc(memberCollectionRef, data.id);
-      const userRef = doc(db, "users", data.id);
+    const memberDocRef = doc(memberCollectionRef, data.id);
+    const userRef = doc(db, "users", data.id);
 
-      await setDoc(memberDocRef, {
-        userId: data.id,
-        displayName: data.displayName,
-        choice: ""
-      })
+    await setDoc(memberDocRef, {
+      userId: data.id,
+      displayName: data.displayName,
+      choice: ""
+    })
 
-      await updateDoc(userRef, {
-        groupToken: password ? password : null
-      })
+    await updateDoc(userRef, {
+      groupToken: password ? password : null
+    })
 
-      window.location.href = `/group?id=${id}`;
+    window.location.href = `/group?id=${id}`;
   }
 
   return (

@@ -41,7 +41,7 @@ const GroupPage = () => {
               choice: doc.data().choice,
             })
           })
-          setMember(membersArray)
+          setMember(membersArray);
         })
         //グループ名とゲームの状態を取得
         const statusDocRef = query(collection(db, "groups"), where("groupId", "==", params.id))
@@ -50,11 +50,11 @@ const GroupPage = () => {
             const gameStatus: string = doc.data().status
             const groupName: string = doc.data().groupName
             const owner: string = doc.data().userId
-            setGroupName(groupName)
-            setGameStart(gameStatus)
+            setGroupName(groupName);
+            setGameStart(gameStatus);
             if(auth.currentUser)
             if(owner === auth.currentUser.uid){
-              setOwner(true)
+              setOwner(true);
             }
           })
         })
@@ -67,7 +67,7 @@ const GroupPage = () => {
     if(isReady) {
       setAllReady(true);
     } else {
-      setAllReady(false)
+      setAllReady(false);
     }
   }, [getMember])
 
@@ -79,7 +79,7 @@ const GroupPage = () => {
     const winnerQuery = query(collection(db, "groups"), where("groupId", "==", params.id));
     onSnapshot(winnerQuery, (querySnapshot) => {
       querySnapshot.docs.forEach((doc) => {
-        setWinner(doc.data().winnerHand)
+        setWinner(doc.data().winnerHand);
       })
     })
   }, [isGameStart, params.id])

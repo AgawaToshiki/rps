@@ -165,8 +165,8 @@ const GroupPage = () => {
 
   const handleLeaveGroup = async() => {
     if(params.id && auth.currentUser){
-      groupMemberDelete(params.id, auth.currentUser.uid);
-      deleteToken(auth.currentUser.uid);
+      await groupMemberDelete(params.id, auth.currentUser.uid);
+      await deleteToken(auth.currentUser.uid);
     }
   }
 
@@ -181,13 +181,13 @@ const GroupPage = () => {
         })
         await deleteDoc(doc.ref)
       })
-      deleteDoc(groupDocRef);
+      await deleteDoc(groupDocRef);
     }
   }
 
   const handleMemberSpectate = async(id: string) => {
     if(params.id){
-      groupMemberDelete(params.id, id);
+      await groupMemberDelete(params.id, id);
     }
   }
 

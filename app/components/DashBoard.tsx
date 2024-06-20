@@ -50,7 +50,7 @@ const DashBoard = ({ data, groupData }: Props) => {
   
   const handleNewGroup = async() => {
     if(ref.current && auth.currentUser){
-      if(ref.current.value === "" || ref.current.value.length > 13){
+      if(ref.current.value.trim() === "" || ref.current.value.length > 12){
         alert("グループ名は12文字以下で必須です");
         return
       }

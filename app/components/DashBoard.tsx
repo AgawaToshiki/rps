@@ -50,57 +50,57 @@ const DashBoard = ({ data, groupData }: Props) => {
   
   const handleNewGroup = async() => {
     if(ref.current && auth.currentUser){
-      if(ref.current.value !== "" && ref.current.value.length < 13){
-        const groupId = uuidv4();
-        const password = usePassword && passwordRef.current !== null && passwordRef.current.value !== "" ? passwordRef.current.value : null;
-        setNewGroup([...newGroup, { id: groupId, name: ref.current.value }]);
-        await setDoc(doc(db, "groups", groupId), {
-          groupId: groupId,
-          groupName: ref.current.value,
-          status: "waiting",
-          winnerHand: "no Hand",
-          userId: auth.currentUser.uid,
-          password: password
-        })
-        ref.current.value = "";
-        if(passwordRef.current)
-        passwordRef.current.value = "";
-      } else {
-        alert("グループ名は12文字以下で必須です")
+      if(ref.current.value === "" || ref.current.value.length > 13){
+        alert("グループ名は12文字以下で必須です");
+        return
       }
+      const groupId = uuidv4();
+      const password = usePassword && passwordRef.current !== null && passwordRef.current.value !== "" ? passwordRef.current.value : null;
+      setNewGroup([...newGroup, { id: groupId, name: ref.current.value }]);
+      await setDoc(doc(db, "groups", groupId), {
+        groupId: groupId,
+        groupName: ref.current.value,
+        status: "waiting",
+        winnerHand: "no Hand",
+        userId: auth.currentUser.uid,
+        password: password
+      })
+      ref.current.value = "";
+      if(passwordRef.current)
+      passwordRef.current.value = "";
     }
   }
 
   const handleJoinGroup = async(groupId: string, e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const groupDoc = await getDoc(doc(db, "groups", groupId));
-    if(groupDoc.exists()){
-      const groupPassword: string = groupDoc.data().password;
-      if(groupPassword && groupPassword !== null){
-        setOpenModal(true);
-        setGroupId(groupId);
-      }else{
-        await addUserGroup(groupId);
-      }
-    }else{
+    if(!groupDoc.exists()){
+      alert("グループが存在しません");
       return
+    }
+    const groupPassword: string = groupDoc.data().password;
+    if(groupPassword && groupPassword !== null){
+      setOpenModal(true);
+      setGroupId(groupId);
+    }else{
+      await addUserGroup(groupId);
     }
   }
 
   const handleSubmit = async() => {
     const groupDoc = await getDoc(doc(db, "groups", groupId));
-    if(groupDoc.exists()){
-      const groupPassword: string = groupDoc.data().password;
-      if(groupPassword === password){
-        await addUserGroup(groupId);
-        handleCancel();
-      }else{
-        alert("パスワードが違います");
-        handleCancel();
-      }
-    }else{
+    if(!groupDoc.exists()){
       handleCancel();
+      alert("グループが存在しません");
       return
+    }
+    const groupPassword: string = groupDoc.data().password;
+    if(groupPassword === password){
+      await addUserGroup(groupId);
+      handleCancel();
+    }else{
+      alert("パスワードが違います");
+      handleCancel();
     }
   }
 

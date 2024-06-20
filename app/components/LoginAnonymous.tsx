@@ -10,13 +10,13 @@ const LoginAnonymous = () => {
   const signIn = async() => {
     setLoading(true);
     try {
-      if(isName && isName.length < 13){
-        const userCredential = await signInAnonymously(auth);
-        const user = userCredential.user;
-        setUserInfo(user.uid, isName);
-      }else {
+      if(isName.trim() === "" || isName.length > 12){
         alert("ニックネームは12文字以下で必須です");
+        return
       }
+      const userCredential = await signInAnonymously(auth);
+      const user = userCredential.user;
+      setUserInfo(user.uid, isName);
     } catch(error) {
       console.log(error);
     } finally {
